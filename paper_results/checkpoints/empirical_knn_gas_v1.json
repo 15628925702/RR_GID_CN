@@ -1,0 +1,7 @@
+{
+  "kind": "empirical_knn",
+  "neighbors": 60,
+  "donor_split": "ref_train",
+  "data_path": "G:\\0-newResearch\\4.RR_GID_CN\\data\\gas\\processed\\gas_processed.npz",
+  "data_sha256": "e87cddfa88ac690de88281747cae1e5198e110ad19c51c69974513328d4d8ffa"
+}
