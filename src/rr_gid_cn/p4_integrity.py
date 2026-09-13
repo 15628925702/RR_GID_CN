@@ -66,10 +66,51 @@ def validate_experiment_mode(cfg: dict[str, Any], *, formal: bool = True, paper:
         mode = str(cfg.get("experiment_mode", cfg.get("score_backend", "cached_qmc")))
         if mode in {"rejection", "finite_lu_rejection"}:
             raise ValueError("paper bulk forbids rejection")
-        if int(cfg.get("replications", 0) or 0) > 40:
-            raise ValueError("paper bulk replications must be <= 40")
-        if str(cfg.get("score_backend", "cached_qmc")) != "cached_qmc":
-            raise ValueError("paper bulk requires score_backend=cached_qmc")
+        replications = int(cfg.get("replications", 0) or 0)
+        # The PDF specifies at least 200 target replications for the main
+        # synthetic result.  Keep an explicit upper guard so a malformed
+        # config cannot silently request an unbounded run.
+        if replications > 200:
+            raise ValueError("paper experiments support at most 200 replications")
+        score_backend = str(cfg.get("score_backend", "cached_qmc"))
+        if score_backend not in {"cached_qmc", "fixed_qmc", "exact_adaptive"}:
+            raise ValueError(
+                "paper experiments require score_backend in {cached_qmc, fixed_qmc, exact_adaptive}"
+            )
+        if score_backend == "exact_adaptive":
+            if not bool(cfg.get("exact_observed_score", False)):
+                raise ValueError(
+                    "exact_adaptive paper runs require exact_observed_score=true"
+                )
+            if int(cfg.get("adaptive_scrambles", 0) or 0) < 2:
+                raise ValueError("exact_adaptive paper runs require adaptive_scrambles >= 2")
+            if int(cfg.get("adaptive_max_order", 0) or 0) < int(cfg.get("score_qmc_order", 0) or 0):
+                raise ValueError("adaptive_max_order must cover score_qmc_order")
+        if score_backend == "fixed_qmc":
+            # The streaming route is mathematically the same nested QMC
+            # evaluator as cached_qmc, but it does not retain the full score
+            # basis in host RAM.  It is admissible only with an explicit,
+            # order-matched equivalence certificate; this prevents a silent
+            # switch to an unvalidated numerical path in formal runs.
+            certificate = cfg.get("fixed_qmc_equivalence_certificate")
+            if not certificate:
+                raise ValueError(
+                    "fixed_qmc formal bulk requires fixed_qmc_equivalence_certificate"
+                )
+            cert_path = Path(str(certificate))
+            if not cert_path.exists():
+                raise ValueError(f"fixed_qmc equivalence certificate not found: {cert_path}")
+            try:
+                cert = json.loads(cert_path.read_text(encoding="utf-8"))
+            except Exception as exc:  # pragma: no cover - defensive config gate
+                raise ValueError(f"invalid fixed_qmc equivalence certificate: {cert_path}") from exc
+            if not bool(cert.get("passed")):
+                raise ValueError("fixed_qmc equivalence certificate is not passed")
+            configured_order = int(cfg.get("score_qmc_order", -1))
+            if int(cert.get("order", -2)) != configured_order:
+                raise ValueError(
+                    "fixed_qmc equivalence certificate order does not match score_qmc_order"
+                )
         return
     if not formal:
         return

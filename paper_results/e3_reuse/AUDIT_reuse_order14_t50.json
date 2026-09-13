@@ -1,0 +1,79 @@
+{
+  "schema_version": "reuse-order14-t50-audit-v1",
+  "passed": true,
+  "publication_eligible": false,
+  "evidence_level": "L4-repaired",
+  "failed_gates": [],
+  "rows_path": "H:\\RR_GID_CN_data\\active\\repaired_20260912\\e3_order14_t50\\rows.jsonl",
+  "config_path": "G:\\0-newResearch\\4.RR_GID_CN\\configs\\paper\\reuse_order14_t50_cloud.yaml",
+  "rows_sha256": "3e608b7d817ba97465e89e9c339af858ca0318067ba7f4b8f2cc5400660d7e21",
+  "config_sha256": "a68348f3ccc8499b478f3fe9105d899027e0e592ce41995611b0077cbb19735e",
+  "row_count": 500,
+  "expected_row_count": 500,
+  "sequences": 5,
+  "campaigns": 50,
+  "report_checkpoints": [
+    1,
+    5,
+    20,
+    50
+  ],
+  "risk_ratio_ci95": {
+    "T=1/RR-GID": {
+      "mean": 1.578053510676165,
+      "ci95": [
+        0.7265470981306813,
+        2.4295599232216487
+      ]
+    },
+    "T=1/Discriminative Score OED": {
+      "mean": 4.182399596974045,
+      "ci95": [
+        0.2887486758041482,
+        8.07605051814394
+      ]
+    },
+    "T=5/RR-GID": {
+      "mean": 1.1031454374995413,
+      "ci95": [
+        0.8899577571647943,
+        1.3163331178342883
+      ]
+    },
+    "T=5/Discriminative Score OED": {
+      "mean": 1.3764147619919194,
+      "ci95": [
+        0.9043503580082126,
+        1.8484791659756261
+      ]
+    },
+    "T=20/RR-GID": {
+      "mean": 1.2687881596887511,
+      "ci95": [
+        0.8008781815308481,
+        1.7366981378466542
+      ]
+    },
+    "T=20/Discriminative Score OED": {
+      "mean": 4.687115293706807,
+      "ci95": [
+        -0.520516522086476,
+        9.89474710950009
+      ]
+    },
+    "T=50/RR-GID": {
+      "mean": 1.0630133656240321,
+      "ci95": [
+        0.6727803996252573,
+        1.453246331622807
+      ]
+    },
+    "T=50/Discriminative Score OED": {
+      "mean": 1.2128252604800414,
+      "ci95": [
+        0.5528311908450678,
+        1.872819330115015
+      ]
+    }
+  }
+}

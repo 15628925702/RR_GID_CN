@@ -1,0 +1,40 @@
+schema_version: paper-e3-order14-t50-v1
+experiment_name: reuse_order14_t50
+evidence_level: L4-repaired
+methods:
+  - RR-GID
+  - Discriminative Score OED
+budgets: [8000]
+campaigns: [1, 5, 20, 50]
+sequences: 5
+replications: 5
+seed_manifest: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e3/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 8000
+  anchor_pilot: 400
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 4
+scoring_max_step_norm: 2.0
+score_backend: cached_qmc
+score_qmc_order: 14
+score_scrambles: 1
+score_mu_qmc_order: 14
+score_mu_scrambles: 4
+information_backend: cached_qmc_cross
+information_qmc_order: 12
+information_outer_rows: 128
+information_scrambles: 2
+dtype: float32
+moment_dtype: float64
+information_seed_root: 204616000
+information_storage_dir: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e3/information_basis
+generator_checkpoint: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/checkpoints/vaeac_reference.pt
+experiment_mode: bulk
+r_features: 12
+n_panels: 40
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
+output_path: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e3

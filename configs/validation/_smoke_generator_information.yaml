@@ -1,0 +1,36 @@
+schema_version: generator-information-gate-v1
+experiment_name: smoke_generator_information
+output_path: H:/RR_GID_CN_data/active/risk_gates/_smoke_risk2
+synthetic:
+  checkpoint: H:/RR_GID_CN_data/reusable/checkpoints/vaeac_reference.pt
+  oracle_artifact: experiments/paper/oracle_artifact.pkl
+  n_tilted: 32
+  n_conditional: 8
+  conditional_panels: 2
+  conditional_queries_per_panel: 2
+  conditional_generator_draws: 32
+  conditional_truth_qmc_order: 8
+gas:
+  checkpoint: H:/RR_GID_CN_data/reusable/checkpoints/vaeac_gas_128_v1.pt
+  data: data/gas/processed/gas_processed.npz
+  n_tilted: 32
+  n_conditional: 8
+  empirical_outer_rows: 128
+  empirical_neighbors: 30
+  conditional_panels: 2
+  conditional_queries_per_panel: 2
+  conditional_generator_draws: 32
+sampling:
+  full_pool: 512
+  tilted_draws: 32
+  conditional_draws: 8
+thresholds:
+  panel_ranking_spearman_min: 0.80
+  validation_design_ratio_max: 1.25
+  top_k: 5
+  top_k_overlap_min: 0.50
+  conditional_normalized_rmse_max: 1.0
+  catastrophic_abs_z_max: 10.0
+  importance_ess_min: 0.10
+  unconditional_acceptance_min: 0.001
+  conditional_acceptance_min: 0.001

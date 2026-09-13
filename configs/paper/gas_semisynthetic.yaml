@@ -21,6 +21,12 @@ score_qmc_order: 8
 information_backend: cached_qmc_cross
 information_qmc_order: 6
 information_outer_rows: 128
+information_scrambles: 2
 dtype: float32
+experiment_mode: bulk
+gen_info_tilted: 64
+gen_info_cond: 16
+mlp_steps: 100
+mlp_hidden: 64
 generator_checkpoint: checkpoints/paper/vaeac_gas.pt
 output_path: results/paper/gas_semisynthetic

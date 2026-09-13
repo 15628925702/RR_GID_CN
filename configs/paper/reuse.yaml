@@ -21,6 +21,13 @@ score_qmc_order: 8
 information_backend: cached_qmc_cross
 information_qmc_order: 6
 information_outer_rows: 128
+information_scrambles: 2
 dtype: float32
+experiment_mode: bulk
+r_features: 12
+n_panels: 40
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
 generator_checkpoint: checkpoints/paper/vaeac_reference.pt
 output_path: results/paper/reuse

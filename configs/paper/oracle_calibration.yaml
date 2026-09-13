@@ -31,5 +31,12 @@ calibration:
   max_abs_coordinate_error: 2.0e-2
   information_panels: 20
   information_betas: 5
+  information_allocation: oracle
   information_op_tol: 0.05
   end_to_end_mean_abs_delta: 0.15
+  adaptive_start_order: 8
+  adaptive_max_order: 16
+  adaptive_atol: 2.0e-5
+  adaptive_rtol: 2.0e-4
+  adaptive_scrambles: 4
+  adaptive_chunk_rows: 64

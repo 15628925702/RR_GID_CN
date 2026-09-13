@@ -1,0 +1,17 @@
+schema_version: gas-secondary-risk-gate-v1
+experiment_name: risk3_gas_empirical_knn_v1
+source_config: configs/paper/gas_natural_empirical_h.yaml
+require_source_reproduction: false
+data: data/gas/processed/gas_processed.npz
+output_path: H:/RR_GID_CN_data/active/risk_gates/risk3_gas_empirical_knn_v1
+replication: 0
+generated_samples: 2000
+conditional_queries: 8
+conditional_draws: 8
+thresholds:
+  c2st_auc_max: 0.70
+  importance_ess_min: 0.05
+  unconditional_acceptance_min: 0.001
+  conditional_acceptance_min: 0.001
+  lambda_min_min: 0.0
+  rr_fw_gap_max: 0.05

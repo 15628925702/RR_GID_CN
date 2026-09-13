@@ -1,0 +1,19 @@
+schema_version: gas-secondary-risk-gate-v1
+experiment_name: smoke_gas_secondary
+source_config: H:/RR_GID_CN_data/active/paper_runs/gas_natural_v1_clean/config.yaml
+source_rows: H:/RR_GID_CN_data/active/paper_runs/gas_natural_v1_clean/rows.jsonl
+source_provenance: H:/RR_GID_CN_data/active/paper_runs/gas_natural_v1_clean/provenance.json
+data: data/gas/processed/gas_processed.npz
+output_path: H:/RR_GID_CN_data/active/risk_gates/_smoke_risk3
+replication: 0
+generated_samples: 128
+conditional_queries: 1
+conditional_draws: 2
+thresholds:
+  c2st_auc_max: 0.70
+  importance_ess_min: 0.05
+  unconditional_acceptance_min: 0.001
+  conditional_acceptance_min: 0.001
+  lambda_min_min: 0.0
+  rr_fw_gap_max: 0.001
+  primary_reproduction_atol: 1.0e-6

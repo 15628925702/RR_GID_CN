@@ -1,0 +1,36 @@
+schema_version: paper-e1-pdf-validated-fixed-order14-j2-probe-v1
+experiment_name: synthetic_main_validated_fixed_order14_j2_probe
+evidence_level: L2-performance-diagnostic
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [2000]
+replications: 1
+seed_manifest: H:/RR_GID_CN_data/active/repaired_20260912/e1_validated_fixed_order14_j2_probe/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 8000
+  anchor_pilot: 400
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 2
+scoring_max_step_norm: 2.0
+score_backend: fixed_qmc
+score_direct_cuda: true
+score_qmc_order: 14
+score_scrambles: 1
+score_mu_qmc_order: 12
+score_mu_scrambles: 4
+fixed_qmc_equivalence_certificate: H:/RR_GID_CN_data/active/repaired_20260911/certificates/fixed_cached_equivalence_order14.json
+information_backend: direct_qmc
+information_qmc_order: 12
+information_outer_rows: 128
+information_scrambles: 2
+information_seed_root: 204616000
+dtype: float32
+moment_dtype: float64
+generator_checkpoint: null
+experiment_mode: validated_fixed_qmc
+output_path: H:/RR_GID_CN_data/active/repaired_20260912/e1_validated_fixed_order14_j2_probe

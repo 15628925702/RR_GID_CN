@@ -798,6 +798,52 @@ def _conditional_qmc_at_order(
     )
 
 
+def _conditional_qmc_ladder(
+    mixture, beta, rows, panel, start_order, end_order, seed, scale, feature_fn,
+):
+    """Evaluate a nested order ladder while constructing the integrand once.
+
+    The CUDA evaluator already exposes all nested prefixes from one highest
+    order call.  Adaptive gold used to call it separately for every order,
+    rebuilding the same conditional Gaussian/feature tensor repeatedly.  A
+    short ladder keeps the row-wise stopping rule unchanged while removing
+    that redundant work.  CPU/custom-feature paths retain the original
+    per-order implementation.
+    """
+    rows = np.atleast_2d(np.asarray(rows, dtype=float))
+    requested = tuple(range(int(start_order), int(end_order) + 1))
+    if len(rows) == 0:
+        return {order: np.zeros((0, np.asarray(beta).size), dtype=float) for order in requested}
+    use_cuda = _cuda_device() is not None and feature_fn is None
+    max_rows = _cuda_qmc_max_rows(int(end_order)) if use_cuda else len(rows)
+    if len(rows) > max_rows:
+        pieces = {order: [] for order in requested}
+        for start in range(0, len(rows), max_rows):
+            chunk = _conditional_qmc_ladder(
+                mixture, beta, rows[start:min(start + max_rows, len(rows))], panel,
+                start_order, end_order, seed, scale, feature_fn,
+            )
+            for order in requested:
+                pieces[order].append(chunk[order])
+            _release_cuda_workspace()
+        return {order: np.concatenate(pieces[order], axis=0) for order in requested}
+    if use_cuda:
+        return {
+            int(order): np.asarray(value, dtype=np.float64)
+            for order, value in tilted_conditional_mean_qmc_nested(
+                mixture, beta, rows, tuple(panel), int(end_order), seed=int(seed),
+                scale=scale, feature_fn=feature_fn, return_orders=requested,
+            ).items()
+        }
+    return {
+        int(order): tilted_conditional_mean_qmc(
+            mixture, beta, rows, tuple(panel), int(order), seed=int(seed),
+            scale=scale, feature_fn=feature_fn,
+        )
+        for order in requested
+    }
+
+
 def tilted_conditional_mean_exact(
     mixture: FrozenMixture,
     beta: np.ndarray,
@@ -852,58 +898,75 @@ def tilted_conditional_mean_exact(
         "max_order": int(max_order),
         "n_active_by_order": n_active_by_order,
     }
-    for order in range(int(start_order), int(max_order) + 1):
-        active_index = np.flatnonzero(active)
-        n_active_by_order[str(order)] = int(len(active_index))
-        if len(active_index) == 0:
-            break
-        replicates = []
+    # A block of nested prefixes is substantially cheaper than reconstructing
+    # the same feature tensor for every order.  Keep the first block modest so
+    # rows that converge early do not pay for the full max order; only the
+    # residual active rows enter later blocks.
+    block_width = 6
+    block_start = int(start_order)
+    while block_start <= int(max_order) and np.any(active):
+        block_end = min(int(max_order), block_start + block_width)
+        block_index = np.flatnonzero(active)
+        replicates_by_order = {order: [] for order in range(block_start, block_end + 1)}
         for scramble in range(int(scrambles)):
             scramble_seed = int(seed) + 1_000_003 * scramble
-            replicates.append(
-                _conditional_qmc_at_order(
-                    mixture, beta, rows[active_index], panel, order,
-                    scramble_seed, scale, feature_fn,
+            ladder = _conditional_qmc_ladder(
+                mixture, beta, rows[block_index], panel,
+                block_start, block_end, scramble_seed, scale, feature_fn,
+            )
+            for order in replicates_by_order:
+                replicates_by_order[order].append(ladder[order])
+        for order in replicates_by_order:
+            active_index = np.flatnonzero(active)
+            n_active_by_order[str(order)] = int(len(active_index))
+            diagnostics["orders"].append(order)
+            # ``block_index`` is the active set at block entry.  Rows that
+            # stopped at an earlier prefix are ignored for this order; their
+            # values remain certified in ``estimate``.
+            local = np.flatnonzero(np.isin(block_index, active_index))
+            if local.size == 0:
+                continue
+            replicate_values = np.stack(replicates_by_order[order], axis=0)[:, local]
+            mean_active = replicate_values.mean(axis=0)
+            se_active = replicate_values.std(axis=0, ddof=1) / np.sqrt(int(scrambles))
+            current_index = block_index[local]
+            estimate[current_index] = mean_active
+            row_se = np.max(se_active, axis=1)
+            row_scramble_se[current_index] = row_se
+            diagnostics["scramble_se"] = float(np.max(row_scramble_se[np.isfinite(row_scramble_se)]))
+            if previous is not None:
+                delta = np.abs(mean_active - previous[current_index])
+                row_delta = np.max(delta, axis=1)
+                row_abs_delta[current_index] = row_delta
+                scale_norm = np.maximum(
+                    np.max(np.abs(mean_active), axis=1),
+                    np.max(np.abs(previous[current_index]), axis=1),
                 )
-            )
-        replicate_values = np.stack(replicates, axis=0)
-        mean_active = replicate_values.mean(axis=0)
-        se_active = replicate_values.std(axis=0, ddof=1) / np.sqrt(int(scrambles))
-        estimate[active_index] = mean_active
-        row_se = np.max(se_active, axis=1)
-        row_scramble_se[active_index] = row_se
-        diagnostics["orders"].append(order)
-        diagnostics["scramble_se"] = float(np.max(row_scramble_se[np.isfinite(row_scramble_se)]))
-        if previous is not None:
-            delta = np.abs(mean_active - previous[active_index])
-            row_delta = np.max(delta, axis=1)
-            row_abs_delta[active_index] = row_delta
-            scale_norm = np.maximum(
-                np.max(np.abs(mean_active), axis=1),
-                np.max(np.abs(previous[active_index]), axis=1),
-            )
-            scale_norm = np.maximum(scale_norm, 1.0)
-            newly = (
-                (row_delta <= float(atol) + float(rtol) * scale_norm)
-                & (row_se <= scramble_se_atol + scramble_se_rtol * scale_norm)
-            )
-            stopped = active_index[newly]
-            row_final_order[stopped] = order
-            active[stopped] = False
-            diagnostics["max_abs_delta"] = float(np.max(row_abs_delta[np.isfinite(row_abs_delta)]))
-            max_scale = float(np.max(np.abs(estimate))) if n_rows else 1.0
-            diagnostics["max_rel_delta"] = float(
-                diagnostics["max_abs_delta"] / max(max_scale, 1.0)
-            )
-            if not np.any(active):
-                diagnostics["converged"] = True
-                diagnostics["final_order"] = int(row_final_order.max())
-                diagnostics["row_final_order"] = row_final_order
-                _release_cuda_workspace()
-                return (estimate, diagnostics) if return_diagnostics else estimate
-        previous = estimate.copy()
+                scale_norm = np.maximum(scale_norm, 1.0)
+                newly = (
+                    (row_delta <= float(atol) + float(rtol) * scale_norm)
+                    & (row_se <= scramble_se_atol + scramble_se_rtol * scale_norm)
+                )
+                stopped = current_index[newly]
+                row_final_order[stopped] = order
+                active[stopped] = False
+                diagnostics["max_abs_delta"] = float(np.max(row_abs_delta[np.isfinite(row_abs_delta)]))
+                max_scale = float(np.max(np.abs(estimate))) if n_rows else 1.0
+                diagnostics["max_rel_delta"] = float(
+                    diagnostics["max_abs_delta"] / max(max_scale, 1.0)
+                )
+                if not np.any(active):
+                    diagnostics["converged"] = True
+                    diagnostics["n_unconverged"] = 0
+                    diagnostics["final_order"] = int(row_final_order.max())
+                    diagnostics["row_final_order"] = row_final_order
+                    _release_cuda_workspace()
+                    return (estimate, diagnostics) if return_diagnostics else estimate
+            previous = estimate.copy()
+        block_start = block_end + 1
         _release_cuda_workspace()
     diagnostics["final_order"] = int(max_order)
+    diagnostics["n_unconverged"] = int(np.count_nonzero(active))
     diagnostics["row_final_order"] = row_final_order
     diagnostics["max_abs_delta"] = float(np.max(row_abs_delta[np.isfinite(row_abs_delta)])) if n_rows else 0.0
     max_scale = float(np.max(np.abs(estimate))) if n_rows else 1.0
@@ -948,7 +1011,12 @@ def _tilted_conditional_mean_qmc_torch(mixture, beta, rows, panel, order, seed, 
 def _tilted_conditional_mean_qmc_torch_impl(mixture, beta, rows, panel, order, seed, scale, posterior, parameters, return_orders=None):
     """CUDA implementation of the same complete tilted QMC integrand."""
     device = _cuda_device()
-    dtype = torch.float64
+    # The bulk fixed-QMC path is calibrated against the float64 evaluator,
+    # but doing the full conditional tensor in float64 on a laptop RTX 4050
+    # makes each scoring step unnecessarily slow.  Keep the node/warp/logit
+    # hot path in float32 and return NumPy float64 reductions to the solver.
+    # The final beta/H/KL operations remain float64 in ``paper_run``.
+    dtype = torch.float32
     n = 1 << int(order)
     complement = tuple(i for i in range(mixture.dimension) if i not in panel)
     feature_dimension = 12

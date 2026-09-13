@@ -1,0 +1,40 @@
+schema_version: paper-e2-repaired-order12-direct-v1
+experiment_name: nonlinearity_order12_direct
+evidence_level: L4-repaired
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [8000]
+alphas: [0.0, 0.5, 1.0, 1.5]
+replications: 15
+seed_manifest: H:/RR_GID_CN_data/active/repaired_20260912/e2_order12_direct/seed_manifest.json
+artifact_storage_dir: H:/RR_GID_CN_data/active/repaired_20260912/e2_order12_direct/artifacts
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 8000
+  anchor_pilot: 400
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 2
+scoring_max_step_norm: 2.0
+score_backend: fixed_qmc
+score_direct_cuda: true
+score_build_on_cuda: false
+share_score_basis: true
+score_qmc_order: 12
+score_scrambles: 1
+score_mu_qmc_order: 12
+score_mu_scrambles: 4
+fixed_qmc_equivalence_certificate: H:/RR_GID_CN_data/active/repaired_20260911/certificates/fixed_cached_equivalence_order12_float32_final3.json
+information_backend: direct_qmc
+information_qmc_order: 12
+information_outer_rows: 128
+information_scrambles: 2
+information_seed_root: 204616000
+dtype: float32
+moment_dtype: float64
+generator_checkpoint: null
+experiment_mode: bulk
+output_path: H:/RR_GID_CN_data/active/repaired_20260912/e2_order12_direct

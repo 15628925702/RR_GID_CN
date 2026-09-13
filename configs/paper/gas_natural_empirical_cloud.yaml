@@ -1,0 +1,34 @@
+schema_version: paper-e5-r2-empirical-v1
+experiment_name: gas_natural_empirical_knn
+evidence_level: L4-empirical-knn
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [800, 1600, 3200]
+campaigns:
+  - batch7
+  - batches8_9
+  - batch10
+replications: 20
+seed_manifest: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e5_r2/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 1600
+  anchor_pilot: 160
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 4
+scoring_max_step_norm: 2.0
+dtype: float32
+experiment_mode: bulk
+information_outer_rows: 512
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
+mlp_hidden: 64
+generator_kind: empirical_knn
+generator_neighbors: 60
+generator_checkpoint: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/checkpoints/empirical_knn_gas_v1.json
+output_path: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e5_r2

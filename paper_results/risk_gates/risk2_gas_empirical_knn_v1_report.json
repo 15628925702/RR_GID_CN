@@ -1,0 +1,134 @@
+{
+  "schema_version": "generator-information-gate-v1",
+  "evidence_level": "scientific-readiness-gate",
+  "passed": true,
+  "failed_gates": [],
+  "environments": [
+    {
+      "environment": "gas",
+      "passed": true,
+      "failed_gates": [],
+      "checkpoint": "H:\\RR_GID_CN_data\\reusable\\checkpoints\\empirical_knn_gas_v1.json",
+      "checkpoint_sha256": "748a1f479f0dc3a442a5e0b676142f002cc942f70176108b637a248a15b1f2aa",
+      "data": "G:\\0-newResearch\\4.RR_GID_CN\\data\\gas\\processed\\gas_processed.npz",
+      "data_sha256": "e87cddfa88ac690de88281747cae1e5198e110ad19c51c69974513328d4d8ffa",
+      "beta": [
+        -0.3365969620733296,
+        0.10209717381283878,
+        -0.8047908215532242,
+        0.5923580935932369,
+        0.27088889475871564,
+        -0.1239434001494193,
+        -0.13238963650440624,
+        0.12894611484111654,
+        -0.11359360932455446,
+        -0.09587451970497342,
+        0.30559295480005116,
+        0.2184381530636712,
+        -0.027215554967349426,
+        -0.03627579900708553,
+        0.06829203187878945,
+        -0.2605861424000883
+      ],
+      "information_fidelity": {
+        "passed": true,
+        "failed_gates": [],
+        "panel_ranking_spearman": 1.0000000000000002,
+        "validation_design_ratio": 1.0,
+        "top_k": 10,
+        "top_k_overlap_count": 10,
+        "top_k_overlap_fraction": 1.0,
+        "reference_top_panel_indices": [
+          77,
+          85,
+          8,
+          76,
+          46,
+          47,
+          28,
+          27,
+          84,
+          14
+        ],
+        "candidate_top_panel_indices": [
+          77,
+          85,
+          8,
+          76,
+          46,
+          47,
+          28,
+          27,
+          84,
+          14
+        ],
+        "panel_relative_frobenius_median": 0.0,
+        "panel_relative_frobenius_p95": 0.0,
+        "panel_relative_frobenius_max": 0.0,
+        "reference_objective": 66.47762845857677,
+        "candidate_allocation_reference_objective": 66.47762845857677,
+        "reference_fw_gap": 6.071012364827766e-06,
+        "candidate_fw_gap": 6.071012364827766e-06,
+        "reference_fw_iterations": 2,
+        "candidate_fw_iterations": 2,
+        "thresholds": {
+          "panel_ranking_spearman_min": 0.8,
+          "validation_design_ratio_max": 1.25,
+          "top_k_overlap_min": 0.5
+        }
+      },
+      "conditional_reconstruction": {
+        "passed": true,
+        "failed_gates": [],
+        "n_queries": 80,
+        "feature_dimension": 16,
+        "normalized_rmse": 0.0,
+        "median_abs_z": 0.0,
+        "p95_abs_z": 0.0,
+        "max_abs_z": 0.0,
+        "thresholds": {
+          "normalized_rmse_max": 1.0,
+          "catastrophic_abs_z_max": 10.0
+        }
+      },
+      "sampling_health": {
+        "passed": true,
+        "failed_gates": [],
+        "importance_ess_fraction": 0.5143679942539559,
+        "unconditional_acceptance": 0.029116465863453816,
+        "conditional_acceptance": 0.030506931424793614,
+        "thresholds": {
+          "importance_ess_min": 0.1,
+          "unconditional_acceptance_min": 0.001,
+          "conditional_acceptance_min": 0.001
+        },
+        "conditional_acceptance_min_observed": 0.006102212051868803,
+        "conditional_acceptance_max_observed": 0.09939759036144578,
+        "conditional_ess_mean": 0.9456917009438375,
+        "conditional_ess_min": 0.7495216421645159
+      },
+      "reference_estimator": {
+        "kind": "cross_fitted_tilt_weighted_knn",
+        "donor_split": "ref_train",
+        "outer_split": "ref_val",
+        "outer_rows": 512,
+        "neighbors": 60
+      }
+    }
+  ],
+  "provenance": {
+    "code_commit": "fe2096313ff6b1d4088b586e2d8570fee5554f54",
+    "dirty_worktree": true,
+    "code_diff_sha256": "9f4b582786d49ea54e28f9cfe4e8694888a34bb7aa40c7b0c60e9ad0f208ca06",
+    "config": "G:\\0-newResearch\\4.RR_GID_CN\\configs\\validation\\generator_information_gas_empirical.yaml",
+    "config_sha256": "075d9a631ae84388d6ad7493ccc87549de2433f81ddc839f4e9a6db4426890a4",
+    "python": "3.10.0rc2 (tags/v3.10.0rc2:839d789, Sep  7 2021, 18:51:45) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "pytorch": "2.6.0+cu124",
+    "device": "cpu",
+    "gpu": null,
+    "cuda_runtime": null
+  },
+  "created_at": "2026-09-12T14:35:58.454280+00:00",
+  "wall_seconds": 13.710553599987179
+}

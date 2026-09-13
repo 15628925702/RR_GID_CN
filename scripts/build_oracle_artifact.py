@@ -25,12 +25,13 @@ def _git_commit() -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", type=Path, default=Path("configs/paper/oracle_calibration.yaml"))
+    ap.add_argument("--alpha", type=float, default=1.0)
     ap.add_argument("--out", type=Path, default=Path("experiments/paper/oracle_artifact.pkl"))
     ap.add_argument("--reference-size", type=int, default=20000)
     ap.add_argument("--large-reference-size", type=int, default=20000)
     args = ap.parse_args()
     cfg = yaml.safe_load(args.config.read_text(encoding="utf-8"))
-    mixture = make_frozen_mixture(seed=2026, alpha=1.0)
+    mixture = make_frozen_mixture(seed=2026, alpha=float(args.alpha))
     scale = reference_scale(mixture, n=6000, seed=2026)
     panels = all_pairs()
     prepared = prepare_s1_oracle(
@@ -46,6 +47,7 @@ def main() -> None:
         "sha256": sha256_file(args.out),
         "commit": _git_commit(),
         "config": str(args.config),
+        "alpha": float(args.alpha),
         "c_star": prepared["oracle_constant"]["half_phi_oracle"],
         "phi_oracle": prepared["oracle_constant"]["phi_oracle"],
         "fw_gap": prepared["oracle_constant"]["fw_gap"],

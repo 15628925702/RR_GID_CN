@@ -1,0 +1,295 @@
+@page {
+  size: A4;
+  margin: 16mm 15.5mm 17mm 15.5mm;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  color: #1c1917;
+  background: #fff;
+  font-family: "Microsoft YaHei UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 10pt;
+  line-height: 1.7;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  widows: 3;
+  orphans: 3;
+}
+
+.masthead {
+  margin: 0 0 1.4em;
+  padding: 0 0 0.95em;
+  border-bottom: 0.6pt solid #1c1917;
+}
+
+.kicker {
+  margin: 0 0 0.5em;
+  font-size: 8pt;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #78716c;
+}
+
+.masthead h1 {
+  margin: 0 0 0.22em;
+  font-size: 18.5pt;
+  font-weight: 700;
+  line-height: 1.32;
+  letter-spacing: 0.01em;
+  color: #0c0a09;
+}
+
+.subtitle {
+  margin: 0 0 0.75em;
+  font-size: 11pt;
+  font-weight: 400;
+  color: #44403c;
+  letter-spacing: 0.02em;
+}
+
+.meta {
+  font-size: 8.2pt;
+  color: #78716c;
+}
+
+.meta .sep {
+  margin: 0 0.7em;
+  color: #a8a29e;
+}
+
+h2, h3, h4, h5 {
+  color: #1c1917;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+h2 {
+  margin: 1.45em 0 0.5em;
+  padding: 0 0 0.26em;
+  font-size: 12.2pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-bottom: 0.5pt solid #1c1917;
+}
+
+h3 {
+  margin: 1.1em 0 0.38em;
+  font-size: 10.5pt;
+  font-weight: 700;
+}
+
+h4 {
+  margin: 0.95em 0 0.32em;
+  font-size: 10.2pt;
+  font-weight: 700;
+}
+
+h5 {
+  margin: 0.75em 0 0.28em;
+  font-size: 10pt;
+  font-weight: 700;
+}
+
+h3 .dot {
+  display: inline-block;
+  width: 0.52em;
+  height: 0.52em;
+  margin-right: 0.38em;
+  border-radius: 50%;
+  vertical-align: 0.06em;
+}
+
+h3 .dot.ok { background: #4d7c0f; }
+h3 .dot.warn { background: #ca8a04; }
+h3 .dot.bad { background: #be123c; }
+
+p { margin: 0.42em 0 0.65em; }
+
+strong {
+  font-weight: 600;
+  color: #0c0a09;
+}
+
+a {
+  color: #1e3a5f;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+ul, ol {
+  margin: 0.22em 0 0.75em;
+  padding-left: 1.3em;
+}
+
+li { margin: 0.16em 0; }
+li > ul, li > ol { margin: 0.12em 0 0.2em; }
+
+hr {
+  margin: 1em 0;
+  border: 0;
+  border-top: 0.4pt solid #e7e5e4;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0 0.95em;
+  font-size: 8.5pt;
+  line-height: 1.45;
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+thead { display: table-header-group; }
+
+th {
+  font-weight: 700;
+  text-align: left;
+  color: #1c1917;
+  background: #f5f5f4;
+  border-top: 0.8pt solid #1c1917;
+  border-bottom: 0.4pt solid #a8a29e;
+  padding: 0.36em 0.45em;
+}
+
+td {
+  border-bottom: 0.35pt solid #e7e5e4;
+  padding: 0.34em 0.45em;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  font-variant-numeric: tabular-nums;
+}
+
+th:nth-child(1),
+td:nth-child(1) { min-width: 4em; }
+
+tbody tr:last-child td {
+  border-bottom: 0.8pt solid #1c1917;
+}
+
+th[align="right"], td[align="right"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+pre {
+  margin: 0.45em 0 0.9em;
+  padding: 0.65em 0.8em;
+  background: #fafaf9;
+  border: 0.4pt solid #e7e5e4;
+  border-left: 1.6pt solid #78716c;
+  font-family: Consolas, "Cascadia Code", "Microsoft YaHei UI", monospace;
+  font-size: 8.0pt;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+code {
+  font-family: Consolas, "Cascadia Code", "Microsoft YaHei UI", monospace;
+  font-size: 0.9em;
+  background: #f5f5f4;
+  padding: 0.04em 0.25em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout, .formula {
+  margin: 0.65em 0 0.95em;
+  padding: 0.55em 0.85em;
+  background: #fafaf9;
+  border-left: 2pt solid #1c1917;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.formula {
+  text-align: center;
+  font-size: 10.4pt;
+  line-height: 1.75;
+  color: #0c0a09;
+}
+
+.callout p { margin: 0.28em 0; }
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
+
+blockquote {
+  margin: 0.65em 0 0.95em;
+  padding: 0.55em 0.85em;
+  background: #fafaf9;
+  border-left: 2pt solid #1c1917;
+  font-size: 9.3pt;
+  line-height: 1.65;
+  color: #292524;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+blockquote p { margin: 0.2em 0; }
+
+h2 + table, h3 + table, h4 + table, h5 + table {
+  page-break-before: avoid;
+  break-before: avoid;
+}
+
+img {
+  max-width: 100%;
+  max-height: 78mm;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0.45em auto 0.35em;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+p img { margin: 0.45em auto 0.35em; }
+
+.caption {
+  margin: -0.15em 0 0.85em;
+  font-size: 8.4pt;
+  color: #57534e;
+  text-align: center;
+}
+
+table:has(th:nth-child(6)) {
+  font-size: 8.1pt;
+}
+
+table:has(th:nth-child(18)) {
+  font-size: 6.7pt;
+  line-height: 1.35;
+  table-layout: fixed;
+}
+
+table:has(th:nth-child(18)) th,
+table:has(th:nth-child(18)) td {
+  padding: 0.28em 0.1em;
+  white-space: nowrap;
+}
+
+table:has(th:nth-child(18)) th:first-child,
+table:has(th:nth-child(18)) td:first-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  width: 7.4em;
+}
+
+table:has(th:nth-child(18)) th {
+  text-align: center;
+  padding: 0.28em 0.06em;
+}

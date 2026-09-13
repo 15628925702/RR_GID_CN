@@ -1,0 +1,31 @@
+{
+  "provenance": {
+    "code_commit": "fe2096313ff6b1d4088b586e2d8570fee5554f54",
+    "worktree_dirty": true,
+    "calibration_script_sha256": "1371e0f28aab5731cd75a211d0f455c713b69106fc3cdbdde57ca9378a30d930",
+    "config_sha256": "85b2fb29c005a97afe4c5bd33c01e096b0bb0348b7b25f99ed0cba85bd5b1681",
+    "prepared_artifact_sha256": "f41e52c4ea8b99558041d3e3e9d5bc955913e0a803342c3e7c4b0f8f73c36a38"
+  },
+  "query": {
+    "n_queries": 200,
+    "orders": [
+      {
+        "order": 12,
+        "n": 200,
+        "n_gold_converged": 200,
+        "median_relative_error": 0.0009488460797354044,
+        "p95_relative_error": 0.0021616298326581182,
+        "max_abs_coordinate_error": 0.0022360057547353845,
+        "median_coordwise_relative_error": 0.015536243807935139,
+        "gold_converged_frac": 1.0,
+        "ok": true
+      }
+    ],
+    "frozen_order": 12,
+    "query_ok": true,
+    "gold": "tilted_conditional_mean_exact"
+  },
+  "query_ok": true,
+  "information_ok": false,
+  "passed": false
+}

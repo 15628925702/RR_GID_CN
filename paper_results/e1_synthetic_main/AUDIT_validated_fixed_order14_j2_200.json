@@ -1,0 +1,15 @@
+{
+  "schema_version": "synthetic-order14-repaired-audit-v1",
+  "passed": true,
+  "publication_eligible": false,
+  "evidence_level": "L4-repaired",
+  "failed_gates": [],
+  "rows_path": "H:\\RR_GID_CN_data\\active\\repaired_20260912\\e1_validated_fixed_order14_j2_200\\rows.jsonl",
+  "config_path": "G:\\0-newResearch\\4.RR_GID_CN\\configs\\paper\\synthetic_main_validated_fixed_order14_j2_200_h.yaml",
+  "config_sha256": "54b42ccf68173df59569db1b234e3b765d1428733868ead434b6e8164643f803",
+  "rows_sha256": "e1f365968d76adc8e66a7b5ed5732b13c71bfc2afe8d407a5a78b82592a06451",
+  "certificate_path": "H:\\RR_GID_CN_data\\active\\repaired_20260911\\certificates\\fixed_cached_equivalence_order14.json",
+  "row_count": 4000,
+  "expected_row_count": 4000,
+  "created_at": "2026-09-12T13:48:04.588158+00:00"
+}

@@ -1,0 +1,118 @@
+{
+  "Table 1a synthetic max budget (B=32000)": [
+    {
+      "method": "Uniform SQD",
+      "budget": 32000,
+      "n_paired_replications": 200,
+      "primary_loss_mean": 3.3464087419531605,
+      "primary_loss_se": 0.13663977450962586,
+      "improvement_vs_uniform_abs": 0.0,
+      "improvement_vs_uniform_pct": 0.0,
+      "paired_diff_ci95_low": 0.0,
+      "paired_diff_ci95_high": 0.0,
+      "design_ratio_mean": 1.026238986947139,
+      "method_seconds_median": 15.667279641522327,
+      "method_seconds_p90": 16.852305339713347
+    },
+    {
+      "method": "A-OSQD",
+      "budget": 32000,
+      "n_paired_replications": 200,
+      "primary_loss_mean": 7.513564252270512,
+      "primary_loss_se": 0.34042959440276255,
+      "improvement_vs_uniform_abs": -4.167155510317352,
+      "improvement_vs_uniform_pct": -124.52619604039033,
+      "paired_diff_ci95_low": -4.808526546299185,
+      "paired_diff_ci95_high": -3.5601892158985207,
+      "design_ratio_mean": 1.026238986947139,
+      "method_seconds_median": 15.657165421522222,
+      "method_seconds_p90": 16.84232359067537
+    },
+    {
+      "method": "Discriminative Score OED",
+      "budget": 32000,
+      "n_paired_replications": 200,
+      "primary_loss_mean": 5.0623708132170915,
+      "primary_loss_se": 0.280638091626311,
+      "improvement_vs_uniform_abs": -1.7159620712639307,
+      "improvement_vs_uniform_pct": -51.27771899921569,
+      "paired_diff_ci95_low": -2.260638610096661,
+      "paired_diff_ci95_high": -1.2167958411668442,
+      "design_ratio_mean": 1.026238986947139,
+      "method_seconds_median": 15.379110205976758,
+      "method_seconds_p90": 16.547466149093815
+    },
+    {
+      "method": "RR-GID",
+      "budget": 32000,
+      "n_paired_replications": 200,
+      "primary_loss_mean": 1.8757439887271021,
+      "primary_loss_se": 0.08024151531774754,
+      "improvement_vs_uniform_abs": 1.4706647532260586,
+      "improvement_vs_uniform_pct": 43.94755293304943,
+      "paired_diff_ci95_low": 1.2289196710583399,
+      "paired_diff_ci95_high": 1.7170319705545882,
+      "design_ratio_mean": 1.026238986947139,
+      "method_seconds_median": 15.609756009478588,
+      "method_seconds_p90": 16.731962807441597
+    }
+  ],
+  "Table 1b gas semi-synthetic max budget (B=3200)": [
+    {
+      "method": "Uniform SQD",
+      "budget": 3200,
+      "n_paired_replications": 20,
+      "primary_loss_mean": 0.42901961458348997,
+      "primary_loss_se": 0.006971379355169761,
+      "improvement_vs_uniform_abs": 0.0,
+      "improvement_vs_uniform_pct": 0.0,
+      "paired_diff_ci95_low": 0.0,
+      "paired_diff_ci95_high": 0.0,
+      "design_ratio_mean": 1.2162011978139007,
+      "method_seconds_median": 6.286184946016874,
+      "method_seconds_p90": 6.486468597146451
+    },
+    {
+      "method": "A-OSQD",
+      "budget": 3200,
+      "n_paired_replications": 20,
+      "primary_loss_mean": 0.43018692112291523,
+      "primary_loss_se": 0.005784409111343435,
+      "improvement_vs_uniform_abs": -0.001167306539425339,
+      "improvement_vs_uniform_pct": -0.2720869861762867,
+      "paired_diff_ci95_low": -0.009362228936249295,
+      "paired_diff_ci95_high": 0.006387996476648961,
+      "design_ratio_mean": 1.4791502401756635,
+      "method_seconds_median": 6.303672442998504,
+      "method_seconds_p90": 6.540134941972793
+    },
+    {
+      "method": "Discriminative Score OED",
+      "budget": 3200,
+      "n_paired_replications": 20,
+      "primary_loss_mean": 0.41901579518655624,
+      "primary_loss_se": 0.007512785985111841,
+      "improvement_vs_uniform_abs": 0.010003819396933691,
+      "improvement_vs_uniform_pct": 2.331786020237283,
+      "paired_diff_ci95_low": -0.004497253259165411,
+      "paired_diff_ci95_high": 0.02662358167887232,
+      "design_ratio_mean": 1.5540378881148158,
+      "method_seconds_median": 6.258823340496747,
+      "method_seconds_p90": 6.571230230544462
+    },
+    {
+      "method": "RR-GID",
+      "budget": 3200,
+      "n_paired_replications": 20,
+      "primary_loss_mean": 0.42477234589248763,
+      "primary_loss_se": 0.004694484889715991,
+      "improvement_vs_uniform_abs": 0.004247268691002173,
+      "improvement_vs_uniform_pct": 0.9899940577601791,
+      "paired_diff_ci95_low": -0.010135915812807712,
+      "paired_diff_ci95_high": 0.015046612929672066,
+      "design_ratio_mean": 1.8076430379870192,
+      "method_seconds_median": 6.352228044037474,
+      "method_seconds_p90": 6.656278184975964
+    }
+  ]
+}

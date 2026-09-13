@@ -1,13 +1,22 @@
 from pathlib import Path
 
 import numpy as np
+import yaml
 
 from scripts.p10_r2_formal import (bregman_projection_loss, heldout_function_values,
                                    solve_acquisition_beta)
 
 
 def test_p10_config_exists():
-    assert Path("configs/p10_smoke.yaml").exists()
+    path = Path("configs/paper/gas_natural.yaml")
+    assert path.exists()
+    config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert config["experiment_name"] == "gas_natural"
+    assert config["experiment_mode"] == "bulk"
+    assert config["campaigns"] == ["batch7", "batches8_9", "batch10"]
+    assert config["score_backend"] == "cached_qmc"
+    assert config["information_backend"] == "cached_qmc_cross"
+    assert config["information_scrambles"] >= 2
 
 
 def test_projection_loss_is_bregman_and_nonnegative():
