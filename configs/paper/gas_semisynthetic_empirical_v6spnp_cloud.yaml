@@ -1,0 +1,40 @@
+schema_version: paper-e5-r1-empirical-v6spnp
+experiment_name: gas_semisynthetic_empirical_knn_v6spnp
+evidence_level: L4-empirical-knn-hatfix
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [1600]
+replications: 20
+seed_manifest: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e5_r1_v4/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 1600
+  anchor_pilot: 160
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 8
+scoring_max_step_norm: 0.5
+scoring_init: zero
+information_at: score_pilot
+rr_fisher: generator
+pilot_moment: knn
+theta_bound: 4.0
+theta_norm_cap: 3.0
+pilot_norm_cap: 2.0
+design_uniform_mix: 0.1
+design_max_share: 0.2
+score_include_pilot: false
+dtype: float32
+experiment_mode: bulk
+information_outer_rows: 512
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
+mlp_hidden: 64
+generator_kind: empirical_knn
+generator_neighbors: 60
+generator_checkpoint: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/checkpoints/empirical_knn_gas_v1.json
+output_path: /kairos_vepfs_volc/autodrive/manlichen/intern/ivan/rr_gid_cloud_20260912/results/e5_r1_v6spnp_smoke

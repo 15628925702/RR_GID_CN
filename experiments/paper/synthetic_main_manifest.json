@@ -1,0 +1,1084 @@
+{
+  "rows": [
+    {
+      "budget": 2000,
+      "replication": 0,
+      "replication_seed": 204609000,
+      "target_draw_seed": 204609003,
+      "pilot_or_design_seed": 204609011,
+      "score_seed_root": 204609004,
+      "information_seed_root": 204616000
+    },
+    {
+      "budget": 2000,
+      "replication": 1,
+      "replication_seed": 204609001,
+      "target_draw_seed": 204609004,
+      "pilot_or_design_seed": 204609012,
+      "score_seed_root": 204609005,
+      "information_seed_root": 204616001
+    },
+    {
+      "budget": 2000,
+      "replication": 2,
+      "replication_seed": 204609002,
+      "target_draw_seed": 204609005,
+      "pilot_or_design_seed": 204609013,
+      "score_seed_root": 204609006,
+      "information_seed_root": 204616002
+    },
+    {
+      "budget": 2000,
+      "replication": 3,
+      "replication_seed": 204609003,
+      "target_draw_seed": 204609006,
+      "pilot_or_design_seed": 204609014,
+      "score_seed_root": 204609007,
+      "information_seed_root": 204616003
+    },
+    {
+      "budget": 2000,
+      "replication": 4,
+      "replication_seed": 204609004,
+      "target_draw_seed": 204609007,
+      "pilot_or_design_seed": 204609015,
+      "score_seed_root": 204609008,
+      "information_seed_root": 204616004
+    },
+    {
+      "budget": 2000,
+      "replication": 5,
+      "replication_seed": 204609005,
+      "target_draw_seed": 204609008,
+      "pilot_or_design_seed": 204609016,
+      "score_seed_root": 204609009,
+      "information_seed_root": 204616005
+    },
+    {
+      "budget": 2000,
+      "replication": 6,
+      "replication_seed": 204609006,
+      "target_draw_seed": 204609009,
+      "pilot_or_design_seed": 204609017,
+      "score_seed_root": 204609010,
+      "information_seed_root": 204616006
+    },
+    {
+      "budget": 2000,
+      "replication": 7,
+      "replication_seed": 204609007,
+      "target_draw_seed": 204609010,
+      "pilot_or_design_seed": 204609018,
+      "score_seed_root": 204609011,
+      "information_seed_root": 204616007
+    },
+    {
+      "budget": 2000,
+      "replication": 8,
+      "replication_seed": 204609008,
+      "target_draw_seed": 204609011,
+      "pilot_or_design_seed": 204609019,
+      "score_seed_root": 204609012,
+      "information_seed_root": 204616008
+    },
+    {
+      "budget": 2000,
+      "replication": 9,
+      "replication_seed": 204609009,
+      "target_draw_seed": 204609012,
+      "pilot_or_design_seed": 204609020,
+      "score_seed_root": 204609013,
+      "information_seed_root": 204616009
+    },
+    {
+      "budget": 2000,
+      "replication": 10,
+      "replication_seed": 204609010,
+      "target_draw_seed": 204609013,
+      "pilot_or_design_seed": 204609021,
+      "score_seed_root": 204609014,
+      "information_seed_root": 204616010
+    },
+    {
+      "budget": 2000,
+      "replication": 11,
+      "replication_seed": 204609011,
+      "target_draw_seed": 204609014,
+      "pilot_or_design_seed": 204609022,
+      "score_seed_root": 204609015,
+      "information_seed_root": 204616011
+    },
+    {
+      "budget": 2000,
+      "replication": 12,
+      "replication_seed": 204609012,
+      "target_draw_seed": 204609015,
+      "pilot_or_design_seed": 204609023,
+      "score_seed_root": 204609016,
+      "information_seed_root": 204616012
+    },
+    {
+      "budget": 2000,
+      "replication": 13,
+      "replication_seed": 204609013,
+      "target_draw_seed": 204609016,
+      "pilot_or_design_seed": 204609024,
+      "score_seed_root": 204609017,
+      "information_seed_root": 204616013
+    },
+    {
+      "budget": 2000,
+      "replication": 14,
+      "replication_seed": 204609014,
+      "target_draw_seed": 204609017,
+      "pilot_or_design_seed": 204609025,
+      "score_seed_root": 204609018,
+      "information_seed_root": 204616014
+    },
+    {
+      "budget": 2000,
+      "replication": 15,
+      "replication_seed": 204609015,
+      "target_draw_seed": 204609018,
+      "pilot_or_design_seed": 204609026,
+      "score_seed_root": 204609019,
+      "information_seed_root": 204616015
+    },
+    {
+      "budget": 2000,
+      "replication": 16,
+      "replication_seed": 204609016,
+      "target_draw_seed": 204609019,
+      "pilot_or_design_seed": 204609027,
+      "score_seed_root": 204609020,
+      "information_seed_root": 204616016
+    },
+    {
+      "budget": 2000,
+      "replication": 17,
+      "replication_seed": 204609017,
+      "target_draw_seed": 204609020,
+      "pilot_or_design_seed": 204609028,
+      "score_seed_root": 204609021,
+      "information_seed_root": 204616017
+    },
+    {
+      "budget": 2000,
+      "replication": 18,
+      "replication_seed": 204609018,
+      "target_draw_seed": 204609021,
+      "pilot_or_design_seed": 204609029,
+      "score_seed_root": 204609022,
+      "information_seed_root": 204616018
+    },
+    {
+      "budget": 2000,
+      "replication": 19,
+      "replication_seed": 204609019,
+      "target_draw_seed": 204609022,
+      "pilot_or_design_seed": 204609030,
+      "score_seed_root": 204609023,
+      "information_seed_root": 204616019
+    },
+    {
+      "budget": 4000,
+      "replication": 0,
+      "replication_seed": 206609000,
+      "target_draw_seed": 206609003,
+      "pilot_or_design_seed": 206609011,
+      "score_seed_root": 206609004,
+      "information_seed_root": 206616000
+    },
+    {
+      "budget": 4000,
+      "replication": 1,
+      "replication_seed": 206609001,
+      "target_draw_seed": 206609004,
+      "pilot_or_design_seed": 206609012,
+      "score_seed_root": 206609005,
+      "information_seed_root": 206616001
+    },
+    {
+      "budget": 4000,
+      "replication": 2,
+      "replication_seed": 206609002,
+      "target_draw_seed": 206609005,
+      "pilot_or_design_seed": 206609013,
+      "score_seed_root": 206609006,
+      "information_seed_root": 206616002
+    },
+    {
+      "budget": 4000,
+      "replication": 3,
+      "replication_seed": 206609003,
+      "target_draw_seed": 206609006,
+      "pilot_or_design_seed": 206609014,
+      "score_seed_root": 206609007,
+      "information_seed_root": 206616003
+    },
+    {
+      "budget": 4000,
+      "replication": 4,
+      "replication_seed": 206609004,
+      "target_draw_seed": 206609007,
+      "pilot_or_design_seed": 206609015,
+      "score_seed_root": 206609008,
+      "information_seed_root": 206616004
+    },
+    {
+      "budget": 4000,
+      "replication": 5,
+      "replication_seed": 206609005,
+      "target_draw_seed": 206609008,
+      "pilot_or_design_seed": 206609016,
+      "score_seed_root": 206609009,
+      "information_seed_root": 206616005
+    },
+    {
+      "budget": 4000,
+      "replication": 6,
+      "replication_seed": 206609006,
+      "target_draw_seed": 206609009,
+      "pilot_or_design_seed": 206609017,
+      "score_seed_root": 206609010,
+      "information_seed_root": 206616006
+    },
+    {
+      "budget": 4000,
+      "replication": 7,
+      "replication_seed": 206609007,
+      "target_draw_seed": 206609010,
+      "pilot_or_design_seed": 206609018,
+      "score_seed_root": 206609011,
+      "information_seed_root": 206616007
+    },
+    {
+      "budget": 4000,
+      "replication": 8,
+      "replication_seed": 206609008,
+      "target_draw_seed": 206609011,
+      "pilot_or_design_seed": 206609019,
+      "score_seed_root": 206609012,
+      "information_seed_root": 206616008
+    },
+    {
+      "budget": 4000,
+      "replication": 9,
+      "replication_seed": 206609009,
+      "target_draw_seed": 206609012,
+      "pilot_or_design_seed": 206609020,
+      "score_seed_root": 206609013,
+      "information_seed_root": 206616009
+    },
+    {
+      "budget": 4000,
+      "replication": 10,
+      "replication_seed": 206609010,
+      "target_draw_seed": 206609013,
+      "pilot_or_design_seed": 206609021,
+      "score_seed_root": 206609014,
+      "information_seed_root": 206616010
+    },
+    {
+      "budget": 4000,
+      "replication": 11,
+      "replication_seed": 206609011,
+      "target_draw_seed": 206609014,
+      "pilot_or_design_seed": 206609022,
+      "score_seed_root": 206609015,
+      "information_seed_root": 206616011
+    },
+    {
+      "budget": 4000,
+      "replication": 12,
+      "replication_seed": 206609012,
+      "target_draw_seed": 206609015,
+      "pilot_or_design_seed": 206609023,
+      "score_seed_root": 206609016,
+      "information_seed_root": 206616012
+    },
+    {
+      "budget": 4000,
+      "replication": 13,
+      "replication_seed": 206609013,
+      "target_draw_seed": 206609016,
+      "pilot_or_design_seed": 206609024,
+      "score_seed_root": 206609017,
+      "information_seed_root": 206616013
+    },
+    {
+      "budget": 4000,
+      "replication": 14,
+      "replication_seed": 206609014,
+      "target_draw_seed": 206609017,
+      "pilot_or_design_seed": 206609025,
+      "score_seed_root": 206609018,
+      "information_seed_root": 206616014
+    },
+    {
+      "budget": 4000,
+      "replication": 15,
+      "replication_seed": 206609015,
+      "target_draw_seed": 206609018,
+      "pilot_or_design_seed": 206609026,
+      "score_seed_root": 206609019,
+      "information_seed_root": 206616015
+    },
+    {
+      "budget": 4000,
+      "replication": 16,
+      "replication_seed": 206609016,
+      "target_draw_seed": 206609019,
+      "pilot_or_design_seed": 206609027,
+      "score_seed_root": 206609020,
+      "information_seed_root": 206616016
+    },
+    {
+      "budget": 4000,
+      "replication": 17,
+      "replication_seed": 206609017,
+      "target_draw_seed": 206609020,
+      "pilot_or_design_seed": 206609028,
+      "score_seed_root": 206609021,
+      "information_seed_root": 206616017
+    },
+    {
+      "budget": 4000,
+      "replication": 18,
+      "replication_seed": 206609018,
+      "target_draw_seed": 206609021,
+      "pilot_or_design_seed": 206609029,
+      "score_seed_root": 206609022,
+      "information_seed_root": 206616018
+    },
+    {
+      "budget": 4000,
+      "replication": 19,
+      "replication_seed": 206609019,
+      "target_draw_seed": 206609022,
+      "pilot_or_design_seed": 206609030,
+      "score_seed_root": 206609023,
+      "information_seed_root": 206616019
+    },
+    {
+      "budget": 8000,
+      "replication": 0,
+      "replication_seed": 210609000,
+      "target_draw_seed": 210609003,
+      "pilot_or_design_seed": 210609011,
+      "score_seed_root": 210609004,
+      "information_seed_root": 210616000
+    },
+    {
+      "budget": 8000,
+      "replication": 1,
+      "replication_seed": 210609001,
+      "target_draw_seed": 210609004,
+      "pilot_or_design_seed": 210609012,
+      "score_seed_root": 210609005,
+      "information_seed_root": 210616001
+    },
+    {
+      "budget": 8000,
+      "replication": 2,
+      "replication_seed": 210609002,
+      "target_draw_seed": 210609005,
+      "pilot_or_design_seed": 210609013,
+      "score_seed_root": 210609006,
+      "information_seed_root": 210616002
+    },
+    {
+      "budget": 8000,
+      "replication": 3,
+      "replication_seed": 210609003,
+      "target_draw_seed": 210609006,
+      "pilot_or_design_seed": 210609014,
+      "score_seed_root": 210609007,
+      "information_seed_root": 210616003
+    },
+    {
+      "budget": 8000,
+      "replication": 4,
+      "replication_seed": 210609004,
+      "target_draw_seed": 210609007,
+      "pilot_or_design_seed": 210609015,
+      "score_seed_root": 210609008,
+      "information_seed_root": 210616004
+    },
+    {
+      "budget": 8000,
+      "replication": 5,
+      "replication_seed": 210609005,
+      "target_draw_seed": 210609008,
+      "pilot_or_design_seed": 210609016,
+      "score_seed_root": 210609009,
+      "information_seed_root": 210616005
+    },
+    {
+      "budget": 8000,
+      "replication": 6,
+      "replication_seed": 210609006,
+      "target_draw_seed": 210609009,
+      "pilot_or_design_seed": 210609017,
+      "score_seed_root": 210609010,
+      "information_seed_root": 210616006
+    },
+    {
+      "budget": 8000,
+      "replication": 7,
+      "replication_seed": 210609007,
+      "target_draw_seed": 210609010,
+      "pilot_or_design_seed": 210609018,
+      "score_seed_root": 210609011,
+      "information_seed_root": 210616007
+    },
+    {
+      "budget": 8000,
+      "replication": 8,
+      "replication_seed": 210609008,
+      "target_draw_seed": 210609011,
+      "pilot_or_design_seed": 210609019,
+      "score_seed_root": 210609012,
+      "information_seed_root": 210616008
+    },
+    {
+      "budget": 8000,
+      "replication": 9,
+      "replication_seed": 210609009,
+      "target_draw_seed": 210609012,
+      "pilot_or_design_seed": 210609020,
+      "score_seed_root": 210609013,
+      "information_seed_root": 210616009
+    },
+    {
+      "budget": 8000,
+      "replication": 10,
+      "replication_seed": 210609010,
+      "target_draw_seed": 210609013,
+      "pilot_or_design_seed": 210609021,
+      "score_seed_root": 210609014,
+      "information_seed_root": 210616010
+    },
+    {
+      "budget": 8000,
+      "replication": 11,
+      "replication_seed": 210609011,
+      "target_draw_seed": 210609014,
+      "pilot_or_design_seed": 210609022,
+      "score_seed_root": 210609015,
+      "information_seed_root": 210616011
+    },
+    {
+      "budget": 8000,
+      "replication": 12,
+      "replication_seed": 210609012,
+      "target_draw_seed": 210609015,
+      "pilot_or_design_seed": 210609023,
+      "score_seed_root": 210609016,
+      "information_seed_root": 210616012
+    },
+    {
+      "budget": 8000,
+      "replication": 13,
+      "replication_seed": 210609013,
+      "target_draw_seed": 210609016,
+      "pilot_or_design_seed": 210609024,
+      "score_seed_root": 210609017,
+      "information_seed_root": 210616013
+    },
+    {
+      "budget": 8000,
+      "replication": 14,
+      "replication_seed": 210609014,
+      "target_draw_seed": 210609017,
+      "pilot_or_design_seed": 210609025,
+      "score_seed_root": 210609018,
+      "information_seed_root": 210616014
+    },
+    {
+      "budget": 8000,
+      "replication": 15,
+      "replication_seed": 210609015,
+      "target_draw_seed": 210609018,
+      "pilot_or_design_seed": 210609026,
+      "score_seed_root": 210609019,
+      "information_seed_root": 210616015
+    },
+    {
+      "budget": 8000,
+      "replication": 16,
+      "replication_seed": 210609016,
+      "target_draw_seed": 210609019,
+      "pilot_or_design_seed": 210609027,
+      "score_seed_root": 210609020,
+      "information_seed_root": 210616016
+    },
+    {
+      "budget": 8000,
+      "replication": 17,
+      "replication_seed": 210609017,
+      "target_draw_seed": 210609020,
+      "pilot_or_design_seed": 210609028,
+      "score_seed_root": 210609021,
+      "information_seed_root": 210616017
+    },
+    {
+      "budget": 8000,
+      "replication": 18,
+      "replication_seed": 210609018,
+      "target_draw_seed": 210609021,
+      "pilot_or_design_seed": 210609029,
+      "score_seed_root": 210609022,
+      "information_seed_root": 210616018
+    },
+    {
+      "budget": 8000,
+      "replication": 19,
+      "replication_seed": 210609019,
+      "target_draw_seed": 210609022,
+      "pilot_or_design_seed": 210609030,
+      "score_seed_root": 210609023,
+      "information_seed_root": 210616019
+    },
+    {
+      "budget": 16000,
+      "replication": 0,
+      "replication_seed": 218609000,
+      "target_draw_seed": 218609003,
+      "pilot_or_design_seed": 218609011,
+      "score_seed_root": 218609004,
+      "information_seed_root": 218616000
+    },
+    {
+      "budget": 16000,
+      "replication": 1,
+      "replication_seed": 218609001,
+      "target_draw_seed": 218609004,
+      "pilot_or_design_seed": 218609012,
+      "score_seed_root": 218609005,
+      "information_seed_root": 218616001
+    },
+    {
+      "budget": 16000,
+      "replication": 2,
+      "replication_seed": 218609002,
+      "target_draw_seed": 218609005,
+      "pilot_or_design_seed": 218609013,
+      "score_seed_root": 218609006,
+      "information_seed_root": 218616002
+    },
+    {
+      "budget": 16000,
+      "replication": 3,
+      "replication_seed": 218609003,
+      "target_draw_seed": 218609006,
+      "pilot_or_design_seed": 218609014,
+      "score_seed_root": 218609007,
+      "information_seed_root": 218616003
+    },
+    {
+      "budget": 16000,
+      "replication": 4,
+      "replication_seed": 218609004,
+      "target_draw_seed": 218609007,
+      "pilot_or_design_seed": 218609015,
+      "score_seed_root": 218609008,
+      "information_seed_root": 218616004
+    },
+    {
+      "budget": 16000,
+      "replication": 5,
+      "replication_seed": 218609005,
+      "target_draw_seed": 218609008,
+      "pilot_or_design_seed": 218609016,
+      "score_seed_root": 218609009,
+      "information_seed_root": 218616005
+    },
+    {
+      "budget": 16000,
+      "replication": 6,
+      "replication_seed": 218609006,
+      "target_draw_seed": 218609009,
+      "pilot_or_design_seed": 218609017,
+      "score_seed_root": 218609010,
+      "information_seed_root": 218616006
+    },
+    {
+      "budget": 16000,
+      "replication": 7,
+      "replication_seed": 218609007,
+      "target_draw_seed": 218609010,
+      "pilot_or_design_seed": 218609018,
+      "score_seed_root": 218609011,
+      "information_seed_root": 218616007
+    },
+    {
+      "budget": 16000,
+      "replication": 8,
+      "replication_seed": 218609008,
+      "target_draw_seed": 218609011,
+      "pilot_or_design_seed": 218609019,
+      "score_seed_root": 218609012,
+      "information_seed_root": 218616008
+    },
+    {
+      "budget": 16000,
+      "replication": 9,
+      "replication_seed": 218609009,
+      "target_draw_seed": 218609012,
+      "pilot_or_design_seed": 218609020,
+      "score_seed_root": 218609013,
+      "information_seed_root": 218616009
+    },
+    {
+      "budget": 16000,
+      "replication": 10,
+      "replication_seed": 218609010,
+      "target_draw_seed": 218609013,
+      "pilot_or_design_seed": 218609021,
+      "score_seed_root": 218609014,
+      "information_seed_root": 218616010
+    },
+    {
+      "budget": 16000,
+      "replication": 11,
+      "replication_seed": 218609011,
+      "target_draw_seed": 218609014,
+      "pilot_or_design_seed": 218609022,
+      "score_seed_root": 218609015,
+      "information_seed_root": 218616011
+    },
+    {
+      "budget": 16000,
+      "replication": 12,
+      "replication_seed": 218609012,
+      "target_draw_seed": 218609015,
+      "pilot_or_design_seed": 218609023,
+      "score_seed_root": 218609016,
+      "information_seed_root": 218616012
+    },
+    {
+      "budget": 16000,
+      "replication": 13,
+      "replication_seed": 218609013,
+      "target_draw_seed": 218609016,
+      "pilot_or_design_seed": 218609024,
+      "score_seed_root": 218609017,
+      "information_seed_root": 218616013
+    },
+    {
+      "budget": 16000,
+      "replication": 14,
+      "replication_seed": 218609014,
+      "target_draw_seed": 218609017,
+      "pilot_or_design_seed": 218609025,
+      "score_seed_root": 218609018,
+      "information_seed_root": 218616014
+    },
+    {
+      "budget": 16000,
+      "replication": 15,
+      "replication_seed": 218609015,
+      "target_draw_seed": 218609018,
+      "pilot_or_design_seed": 218609026,
+      "score_seed_root": 218609019,
+      "information_seed_root": 218616015
+    },
+    {
+      "budget": 16000,
+      "replication": 16,
+      "replication_seed": 218609016,
+      "target_draw_seed": 218609019,
+      "pilot_or_design_seed": 218609027,
+      "score_seed_root": 218609020,
+      "information_seed_root": 218616016
+    },
+    {
+      "budget": 16000,
+      "replication": 17,
+      "replication_seed": 218609017,
+      "target_draw_seed": 218609020,
+      "pilot_or_design_seed": 218609028,
+      "score_seed_root": 218609021,
+      "information_seed_root": 218616017
+    },
+    {
+      "budget": 16000,
+      "replication": 18,
+      "replication_seed": 218609018,
+      "target_draw_seed": 218609021,
+      "pilot_or_design_seed": 218609029,
+      "score_seed_root": 218609022,
+      "information_seed_root": 218616018
+    },
+    {
+      "budget": 16000,
+      "replication": 19,
+      "replication_seed": 218609019,
+      "target_draw_seed": 218609022,
+      "pilot_or_design_seed": 218609030,
+      "score_seed_root": 218609023,
+      "information_seed_root": 218616019
+    },
+    {
+      "budget": 32000,
+      "replication": 0,
+      "replication_seed": 234609000,
+      "target_draw_seed": 234609003,
+      "pilot_or_design_seed": 234609011,
+      "score_seed_root": 234609004,
+      "information_seed_root": 234616000
+    },
+    {
+      "budget": 32000,
+      "replication": 1,
+      "replication_seed": 234609001,
+      "target_draw_seed": 234609004,
+      "pilot_or_design_seed": 234609012,
+      "score_seed_root": 234609005,
+      "information_seed_root": 234616001
+    },
+    {
+      "budget": 32000,
+      "replication": 2,
+      "replication_seed": 234609002,
+      "target_draw_seed": 234609005,
+      "pilot_or_design_seed": 234609013,
+      "score_seed_root": 234609006,
+      "information_seed_root": 234616002
+    },
+    {
+      "budget": 32000,
+      "replication": 3,
+      "replication_seed": 234609003,
+      "target_draw_seed": 234609006,
+      "pilot_or_design_seed": 234609014,
+      "score_seed_root": 234609007,
+      "information_seed_root": 234616003
+    },
+    {
+      "budget": 32000,
+      "replication": 4,
+      "replication_seed": 234609004,
+      "target_draw_seed": 234609007,
+      "pilot_or_design_seed": 234609015,
+      "score_seed_root": 234609008,
+      "information_seed_root": 234616004
+    },
+    {
+      "budget": 32000,
+      "replication": 5,
+      "replication_seed": 234609005,
+      "target_draw_seed": 234609008,
+      "pilot_or_design_seed": 234609016,
+      "score_seed_root": 234609009,
+      "information_seed_root": 234616005
+    },
+    {
+      "budget": 32000,
+      "replication": 6,
+      "replication_seed": 234609006,
+      "target_draw_seed": 234609009,
+      "pilot_or_design_seed": 234609017,
+      "score_seed_root": 234609010,
+      "information_seed_root": 234616006
+    },
+    {
+      "budget": 32000,
+      "replication": 7,
+      "replication_seed": 234609007,
+      "target_draw_seed": 234609010,
+      "pilot_or_design_seed": 234609018,
+      "score_seed_root": 234609011,
+      "information_seed_root": 234616007
+    },
+    {
+      "budget": 32000,
+      "replication": 8,
+      "replication_seed": 234609008,
+      "target_draw_seed": 234609011,
+      "pilot_or_design_seed": 234609019,
+      "score_seed_root": 234609012,
+      "information_seed_root": 234616008
+    },
+    {
+      "budget": 32000,
+      "replication": 9,
+      "replication_seed": 234609009,
+      "target_draw_seed": 234609012,
+      "pilot_or_design_seed": 234609020,
+      "score_seed_root": 234609013,
+      "information_seed_root": 234616009
+    },
+    {
+      "budget": 32000,
+      "replication": 10,
+      "replication_seed": 234609010,
+      "target_draw_seed": 234609013,
+      "pilot_or_design_seed": 234609021,
+      "score_seed_root": 234609014,
+      "information_seed_root": 234616010
+    },
+    {
+      "budget": 32000,
+      "replication": 11,
+      "replication_seed": 234609011,
+      "target_draw_seed": 234609014,
+      "pilot_or_design_seed": 234609022,
+      "score_seed_root": 234609015,
+      "information_seed_root": 234616011
+    },
+    {
+      "budget": 32000,
+      "replication": 12,
+      "replication_seed": 234609012,
+      "target_draw_seed": 234609015,
+      "pilot_or_design_seed": 234609023,
+      "score_seed_root": 234609016,
+      "information_seed_root": 234616012
+    },
+    {
+      "budget": 32000,
+      "replication": 13,
+      "replication_seed": 234609013,
+      "target_draw_seed": 234609016,
+      "pilot_or_design_seed": 234609024,
+      "score_seed_root": 234609017,
+      "information_seed_root": 234616013
+    },
+    {
+      "budget": 32000,
+      "replication": 14,
+      "replication_seed": 234609014,
+      "target_draw_seed": 234609017,
+      "pilot_or_design_seed": 234609025,
+      "score_seed_root": 234609018,
+      "information_seed_root": 234616014
+    },
+    {
+      "budget": 32000,
+      "replication": 15,
+      "replication_seed": 234609015,
+      "target_draw_seed": 234609018,
+      "pilot_or_design_seed": 234609026,
+      "score_seed_root": 234609019,
+      "information_seed_root": 234616015
+    },
+    {
+      "budget": 32000,
+      "replication": 16,
+      "replication_seed": 234609016,
+      "target_draw_seed": 234609019,
+      "pilot_or_design_seed": 234609027,
+      "score_seed_root": 234609020,
+      "information_seed_root": 234616016
+    },
+    {
+      "budget": 32000,
+      "replication": 17,
+      "replication_seed": 234609017,
+      "target_draw_seed": 234609020,
+      "pilot_or_design_seed": 234609028,
+      "score_seed_root": 234609021,
+      "information_seed_root": 234616017
+    },
+    {
+      "budget": 32000,
+      "replication": 18,
+      "replication_seed": 234609018,
+      "target_draw_seed": 234609021,
+      "pilot_or_design_seed": 234609029,
+      "score_seed_root": 234609022,
+      "information_seed_root": 234616018
+    },
+    {
+      "budget": 32000,
+      "replication": 19,
+      "replication_seed": 234609019,
+      "target_draw_seed": 234609022,
+      "pilot_or_design_seed": 234609030,
+      "score_seed_root": 234609023,
+      "information_seed_root": 234616019
+    },
+    {
+      "budget": 32000,
+      "replication": 20,
+      "replication_seed": 234609020,
+      "target_draw_seed": 234609023,
+      "pilot_or_design_seed": 234609031,
+      "score_seed_root": 234609024,
+      "information_seed_root": 234616020
+    },
+    {
+      "budget": 32000,
+      "replication": 21,
+      "replication_seed": 234609021,
+      "target_draw_seed": 234609024,
+      "pilot_or_design_seed": 234609032,
+      "score_seed_root": 234609025,
+      "information_seed_root": 234616021
+    },
+    {
+      "budget": 32000,
+      "replication": 22,
+      "replication_seed": 234609022,
+      "target_draw_seed": 234609025,
+      "pilot_or_design_seed": 234609033,
+      "score_seed_root": 234609026,
+      "information_seed_root": 234616022
+    },
+    {
+      "budget": 32000,
+      "replication": 23,
+      "replication_seed": 234609023,
+      "target_draw_seed": 234609026,
+      "pilot_or_design_seed": 234609034,
+      "score_seed_root": 234609027,
+      "information_seed_root": 234616023
+    },
+    {
+      "budget": 32000,
+      "replication": 24,
+      "replication_seed": 234609024,
+      "target_draw_seed": 234609027,
+      "pilot_or_design_seed": 234609035,
+      "score_seed_root": 234609028,
+      "information_seed_root": 234616024
+    },
+    {
+      "budget": 32000,
+      "replication": 25,
+      "replication_seed": 234609025,
+      "target_draw_seed": 234609028,
+      "pilot_or_design_seed": 234609036,
+      "score_seed_root": 234609029,
+      "information_seed_root": 234616025
+    },
+    {
+      "budget": 32000,
+      "replication": 26,
+      "replication_seed": 234609026,
+      "target_draw_seed": 234609029,
+      "pilot_or_design_seed": 234609037,
+      "score_seed_root": 234609030,
+      "information_seed_root": 234616026
+    },
+    {
+      "budget": 32000,
+      "replication": 27,
+      "replication_seed": 234609027,
+      "target_draw_seed": 234609030,
+      "pilot_or_design_seed": 234609038,
+      "score_seed_root": 234609031,
+      "information_seed_root": 234616027
+    },
+    {
+      "budget": 32000,
+      "replication": 28,
+      "replication_seed": 234609028,
+      "target_draw_seed": 234609031,
+      "pilot_or_design_seed": 234609039,
+      "score_seed_root": 234609032,
+      "information_seed_root": 234616028
+    },
+    {
+      "budget": 32000,
+      "replication": 29,
+      "replication_seed": 234609029,
+      "target_draw_seed": 234609032,
+      "pilot_or_design_seed": 234609040,
+      "score_seed_root": 234609033,
+      "information_seed_root": 234616029
+    },
+    {
+      "budget": 32000,
+      "replication": 30,
+      "replication_seed": 234609030,
+      "target_draw_seed": 234609033,
+      "pilot_or_design_seed": 234609041,
+      "score_seed_root": 234609034,
+      "information_seed_root": 234616030
+    },
+    {
+      "budget": 32000,
+      "replication": 31,
+      "replication_seed": 234609031,
+      "target_draw_seed": 234609034,
+      "pilot_or_design_seed": 234609042,
+      "score_seed_root": 234609035,
+      "information_seed_root": 234616031
+    },
+    {
+      "budget": 32000,
+      "replication": 32,
+      "replication_seed": 234609032,
+      "target_draw_seed": 234609035,
+      "pilot_or_design_seed": 234609043,
+      "score_seed_root": 234609036,
+      "information_seed_root": 234616032
+    },
+    {
+      "budget": 32000,
+      "replication": 33,
+      "replication_seed": 234609033,
+      "target_draw_seed": 234609036,
+      "pilot_or_design_seed": 234609044,
+      "score_seed_root": 234609037,
+      "information_seed_root": 234616033
+    },
+    {
+      "budget": 32000,
+      "replication": 34,
+      "replication_seed": 234609034,
+      "target_draw_seed": 234609037,
+      "pilot_or_design_seed": 234609045,
+      "score_seed_root": 234609038,
+      "information_seed_root": 234616034
+    },
+    {
+      "budget": 32000,
+      "replication": 35,
+      "replication_seed": 234609035,
+      "target_draw_seed": 234609038,
+      "pilot_or_design_seed": 234609046,
+      "score_seed_root": 234609039,
+      "information_seed_root": 234616035
+    },
+    {
+      "budget": 32000,
+      "replication": 36,
+      "replication_seed": 234609036,
+      "target_draw_seed": 234609039,
+      "pilot_or_design_seed": 234609047,
+      "score_seed_root": 234609040,
+      "information_seed_root": 234616036
+    },
+    {
+      "budget": 32000,
+      "replication": 37,
+      "replication_seed": 234609037,
+      "target_draw_seed": 234609040,
+      "pilot_or_design_seed": 234609048,
+      "score_seed_root": 234609041,
+      "information_seed_root": 234616037
+    },
+    {
+      "budget": 32000,
+      "replication": 38,
+      "replication_seed": 234609038,
+      "target_draw_seed": 234609041,
+      "pilot_or_design_seed": 234609049,
+      "score_seed_root": 234609042,
+      "information_seed_root": 234616038
+    },
+    {
+      "budget": 32000,
+      "replication": 39,
+      "replication_seed": 234609039,
+      "target_draw_seed": 234609042,
+      "pilot_or_design_seed": 234609050,
+      "score_seed_root": 234609043,
+      "information_seed_root": 234616039
+    }
+  ]
+}

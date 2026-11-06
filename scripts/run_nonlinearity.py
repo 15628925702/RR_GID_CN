@@ -189,6 +189,7 @@ def main() -> None:
                     hot_dtype=str(cfg.get("dtype", "float32")),
                     score_backend=str(cfg.get("score_backend", "cached_qmc")),
                     score_direct_cuda=bool(cfg.get("score_direct_cuda", False)),
+                    rr_design_fisher=str(cfg.get("rr_design_fisher", "beta_star")),
                     score_build_on_cuda=bool(cfg.get("score_build_on_cuda", False)),
                     share_score_basis=bool(cfg.get("share_score_basis", True)),
                     adaptive_start_order=int(cfg.get("adaptive_start_order", 8)),

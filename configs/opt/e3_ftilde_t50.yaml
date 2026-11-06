@@ -1,0 +1,42 @@
+schema_version: opt-e3-ftilde-t50-v1
+experiment_name: opt_e3_ftilde_t50
+evidence_level: L4-opt-t50
+methods:
+  - RR-GID
+  - Discriminative Score OED
+budgets: [8000]
+campaigns: [1, 5, 20, 50]
+sequences: 5
+replications: 5
+seed_manifest: G:/0-newResearch/4.RR_GID_CN/results/opt/e3_ftilde_t50/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 8000
+  anchor_pilot: 400
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 4
+scoring_max_step_norm: 2.0
+score_backend: fixed_qmc
+score_direct_cuda: true
+score_qmc_order: 14
+score_scrambles: 1
+score_mu_qmc_order: 12
+score_mu_scrambles: 4
+fixed_qmc_equivalence_certificate: G:/0-newResearch/4.RR_GID_CN/paper_results/risk_gates/fixed_cached_equivalence_order14.json
+information_backend: direct_qmc
+information_qmc_order: 12
+information_outer_rows: 128
+information_scrambles: 2
+dtype: float32
+moment_dtype: float64
+information_seed_root: 204616000
+generator_checkpoint: F:/RR_GID_CN_cache/vaeac_e3_local.pt
+experiment_mode: validated_fixed_qmc
+rr_design_fisher: plugin_tilde
+r_features: 12
+n_panels: 40
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
+output_path: G:/0-newResearch/4.RR_GID_CN/results/opt/e3_ftilde_t50

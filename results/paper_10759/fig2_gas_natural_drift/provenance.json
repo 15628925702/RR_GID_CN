@@ -1,0 +1,44 @@
+{
+  "schema_version": "gas-natural-v1-provenance",
+  "stage": "P10",
+  "experiment": "gas_natural_v1",
+  "status": "completed",
+  "config": "G:\\0-newResearch\\4.RR_GID_CN\\configs\\opt\\gas_r2_v6mix_calahat_20.yaml",
+  "config_sha256": "03c6d26b3762ab2796f52899b44ab741f2703380eb16c7c14c13701feb937261",
+  "data": "data\\gas\\processed\\gas_processed.npz",
+  "data_sha256": "e87cddfa88ac690de88281747cae1e5198e110ad19c51c69974513328d4d8ffa",
+  "checkpoint": "H:\\RR_GID_CN_data\\active\\opt_20260914\\checkpoints\\vaeac_gas_opt_v6mix.pt",
+  "checkpoint_sha256": "5bb8d4818bfbf7e6792e9494e2de9bc06eeafa84f795a86221fad03d622583da",
+  "seed_manifest": "G:\\0-newResearch\\4.RR_GID_CN\\paper_results\\e5_r2_v5\\seed_manifest.json",
+  "seed_manifest_sha256": "9d9d73ead206e7095a5233cdd2f2396e98bf793fc72761378726a1bab0fe5766",
+  "rows": "G:\\0-newResearch\\4.RR_GID_CN\\results\\opt\\e5_r2_v6mix_calahat_20\\rows.jsonl",
+  "methods": [
+    "Uniform SQD",
+    "A-OSQD",
+    "Discriminative Score OED",
+    "RR-GID"
+  ],
+  "campaigns": [
+    "batch7",
+    "batches8_9",
+    "batch10"
+  ],
+  "budgets": [
+    800,
+    1600,
+    3200
+  ],
+  "replications": 20,
+  "resume_supported": true,
+  "created_at": "2026-09-14T15:49:02.493769+00:00",
+  "runtime": {
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "pytorch": "2.6.0+cu124",
+    "cuda_runtime": "12.4",
+    "score_backend": null,
+    "information_backend": null
+  },
+  "completed_at": "2026-09-14T16:24:26.336799+00:00",
+  "row_count": 720
+}

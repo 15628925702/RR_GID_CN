@@ -1,0 +1,604 @@
+{
+  "rows": [
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 0,
+      "replication_seed": 210609000,
+      "target_draw_seed": 210609003,
+      "pilot_or_design_seed": 210609011,
+      "score_seed_root": 210609004,
+      "information_seed_root": 210616000
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 1,
+      "replication_seed": 210609001,
+      "target_draw_seed": 210609004,
+      "pilot_or_design_seed": 210609012,
+      "score_seed_root": 210609005,
+      "information_seed_root": 210616001
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 2,
+      "replication_seed": 210609002,
+      "target_draw_seed": 210609005,
+      "pilot_or_design_seed": 210609013,
+      "score_seed_root": 210609006,
+      "information_seed_root": 210616002
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 3,
+      "replication_seed": 210609003,
+      "target_draw_seed": 210609006,
+      "pilot_or_design_seed": 210609014,
+      "score_seed_root": 210609007,
+      "information_seed_root": 210616003
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 4,
+      "replication_seed": 210609004,
+      "target_draw_seed": 210609007,
+      "pilot_or_design_seed": 210609015,
+      "score_seed_root": 210609008,
+      "information_seed_root": 210616004
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 5,
+      "replication_seed": 210609005,
+      "target_draw_seed": 210609008,
+      "pilot_or_design_seed": 210609016,
+      "score_seed_root": 210609009,
+      "information_seed_root": 210616005
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 6,
+      "replication_seed": 210609006,
+      "target_draw_seed": 210609009,
+      "pilot_or_design_seed": 210609017,
+      "score_seed_root": 210609010,
+      "information_seed_root": 210616006
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 7,
+      "replication_seed": 210609007,
+      "target_draw_seed": 210609010,
+      "pilot_or_design_seed": 210609018,
+      "score_seed_root": 210609011,
+      "information_seed_root": 210616007
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 8,
+      "replication_seed": 210609008,
+      "target_draw_seed": 210609011,
+      "pilot_or_design_seed": 210609019,
+      "score_seed_root": 210609012,
+      "information_seed_root": 210616008
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 9,
+      "replication_seed": 210609009,
+      "target_draw_seed": 210609012,
+      "pilot_or_design_seed": 210609020,
+      "score_seed_root": 210609013,
+      "information_seed_root": 210616009
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 10,
+      "replication_seed": 210609010,
+      "target_draw_seed": 210609013,
+      "pilot_or_design_seed": 210609021,
+      "score_seed_root": 210609014,
+      "information_seed_root": 210616010
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 11,
+      "replication_seed": 210609011,
+      "target_draw_seed": 210609014,
+      "pilot_or_design_seed": 210609022,
+      "score_seed_root": 210609015,
+      "information_seed_root": 210616011
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 12,
+      "replication_seed": 210609012,
+      "target_draw_seed": 210609015,
+      "pilot_or_design_seed": 210609023,
+      "score_seed_root": 210609016,
+      "information_seed_root": 210616012
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 13,
+      "replication_seed": 210609013,
+      "target_draw_seed": 210609016,
+      "pilot_or_design_seed": 210609024,
+      "score_seed_root": 210609017,
+      "information_seed_root": 210616013
+    },
+    {
+      "alpha": 0.0,
+      "budget": 8000,
+      "replication": 14,
+      "replication_seed": 210609014,
+      "target_draw_seed": 210609017,
+      "pilot_or_design_seed": 210609025,
+      "score_seed_root": 210609018,
+      "information_seed_root": 210616014
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 0,
+      "replication_seed": 215609000,
+      "target_draw_seed": 215609003,
+      "pilot_or_design_seed": 215609011,
+      "score_seed_root": 215609004,
+      "information_seed_root": 215616000
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 1,
+      "replication_seed": 215609001,
+      "target_draw_seed": 215609004,
+      "pilot_or_design_seed": 215609012,
+      "score_seed_root": 215609005,
+      "information_seed_root": 215616001
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 2,
+      "replication_seed": 215609002,
+      "target_draw_seed": 215609005,
+      "pilot_or_design_seed": 215609013,
+      "score_seed_root": 215609006,
+      "information_seed_root": 215616002
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 3,
+      "replication_seed": 215609003,
+      "target_draw_seed": 215609006,
+      "pilot_or_design_seed": 215609014,
+      "score_seed_root": 215609007,
+      "information_seed_root": 215616003
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 4,
+      "replication_seed": 215609004,
+      "target_draw_seed": 215609007,
+      "pilot_or_design_seed": 215609015,
+      "score_seed_root": 215609008,
+      "information_seed_root": 215616004
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 5,
+      "replication_seed": 215609005,
+      "target_draw_seed": 215609008,
+      "pilot_or_design_seed": 215609016,
+      "score_seed_root": 215609009,
+      "information_seed_root": 215616005
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 6,
+      "replication_seed": 215609006,
+      "target_draw_seed": 215609009,
+      "pilot_or_design_seed": 215609017,
+      "score_seed_root": 215609010,
+      "information_seed_root": 215616006
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 7,
+      "replication_seed": 215609007,
+      "target_draw_seed": 215609010,
+      "pilot_or_design_seed": 215609018,
+      "score_seed_root": 215609011,
+      "information_seed_root": 215616007
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 8,
+      "replication_seed": 215609008,
+      "target_draw_seed": 215609011,
+      "pilot_or_design_seed": 215609019,
+      "score_seed_root": 215609012,
+      "information_seed_root": 215616008
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 9,
+      "replication_seed": 215609009,
+      "target_draw_seed": 215609012,
+      "pilot_or_design_seed": 215609020,
+      "score_seed_root": 215609013,
+      "information_seed_root": 215616009
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 10,
+      "replication_seed": 215609010,
+      "target_draw_seed": 215609013,
+      "pilot_or_design_seed": 215609021,
+      "score_seed_root": 215609014,
+      "information_seed_root": 215616010
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 11,
+      "replication_seed": 215609011,
+      "target_draw_seed": 215609014,
+      "pilot_or_design_seed": 215609022,
+      "score_seed_root": 215609015,
+      "information_seed_root": 215616011
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 12,
+      "replication_seed": 215609012,
+      "target_draw_seed": 215609015,
+      "pilot_or_design_seed": 215609023,
+      "score_seed_root": 215609016,
+      "information_seed_root": 215616012
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 13,
+      "replication_seed": 215609013,
+      "target_draw_seed": 215609016,
+      "pilot_or_design_seed": 215609024,
+      "score_seed_root": 215609017,
+      "information_seed_root": 215616013
+    },
+    {
+      "alpha": 0.5,
+      "budget": 8000,
+      "replication": 14,
+      "replication_seed": 215609014,
+      "target_draw_seed": 215609017,
+      "pilot_or_design_seed": 215609025,
+      "score_seed_root": 215609018,
+      "information_seed_root": 215616014
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 0,
+      "replication_seed": 220609000,
+      "target_draw_seed": 220609003,
+      "pilot_or_design_seed": 220609011,
+      "score_seed_root": 220609004,
+      "information_seed_root": 220616000
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 1,
+      "replication_seed": 220609001,
+      "target_draw_seed": 220609004,
+      "pilot_or_design_seed": 220609012,
+      "score_seed_root": 220609005,
+      "information_seed_root": 220616001
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 2,
+      "replication_seed": 220609002,
+      "target_draw_seed": 220609005,
+      "pilot_or_design_seed": 220609013,
+      "score_seed_root": 220609006,
+      "information_seed_root": 220616002
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 3,
+      "replication_seed": 220609003,
+      "target_draw_seed": 220609006,
+      "pilot_or_design_seed": 220609014,
+      "score_seed_root": 220609007,
+      "information_seed_root": 220616003
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 4,
+      "replication_seed": 220609004,
+      "target_draw_seed": 220609007,
+      "pilot_or_design_seed": 220609015,
+      "score_seed_root": 220609008,
+      "information_seed_root": 220616004
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 5,
+      "replication_seed": 220609005,
+      "target_draw_seed": 220609008,
+      "pilot_or_design_seed": 220609016,
+      "score_seed_root": 220609009,
+      "information_seed_root": 220616005
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 6,
+      "replication_seed": 220609006,
+      "target_draw_seed": 220609009,
+      "pilot_or_design_seed": 220609017,
+      "score_seed_root": 220609010,
+      "information_seed_root": 220616006
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 7,
+      "replication_seed": 220609007,
+      "target_draw_seed": 220609010,
+      "pilot_or_design_seed": 220609018,
+      "score_seed_root": 220609011,
+      "information_seed_root": 220616007
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 8,
+      "replication_seed": 220609008,
+      "target_draw_seed": 220609011,
+      "pilot_or_design_seed": 220609019,
+      "score_seed_root": 220609012,
+      "information_seed_root": 220616008
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 9,
+      "replication_seed": 220609009,
+      "target_draw_seed": 220609012,
+      "pilot_or_design_seed": 220609020,
+      "score_seed_root": 220609013,
+      "information_seed_root": 220616009
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 10,
+      "replication_seed": 220609010,
+      "target_draw_seed": 220609013,
+      "pilot_or_design_seed": 220609021,
+      "score_seed_root": 220609014,
+      "information_seed_root": 220616010
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 11,
+      "replication_seed": 220609011,
+      "target_draw_seed": 220609014,
+      "pilot_or_design_seed": 220609022,
+      "score_seed_root": 220609015,
+      "information_seed_root": 220616011
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 12,
+      "replication_seed": 220609012,
+      "target_draw_seed": 220609015,
+      "pilot_or_design_seed": 220609023,
+      "score_seed_root": 220609016,
+      "information_seed_root": 220616012
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 13,
+      "replication_seed": 220609013,
+      "target_draw_seed": 220609016,
+      "pilot_or_design_seed": 220609024,
+      "score_seed_root": 220609017,
+      "information_seed_root": 220616013
+    },
+    {
+      "alpha": 1.0,
+      "budget": 8000,
+      "replication": 14,
+      "replication_seed": 220609014,
+      "target_draw_seed": 220609017,
+      "pilot_or_design_seed": 220609025,
+      "score_seed_root": 220609018,
+      "information_seed_root": 220616014
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 0,
+      "replication_seed": 225609000,
+      "target_draw_seed": 225609003,
+      "pilot_or_design_seed": 225609011,
+      "score_seed_root": 225609004,
+      "information_seed_root": 225616000
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 1,
+      "replication_seed": 225609001,
+      "target_draw_seed": 225609004,
+      "pilot_or_design_seed": 225609012,
+      "score_seed_root": 225609005,
+      "information_seed_root": 225616001
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 2,
+      "replication_seed": 225609002,
+      "target_draw_seed": 225609005,
+      "pilot_or_design_seed": 225609013,
+      "score_seed_root": 225609006,
+      "information_seed_root": 225616002
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 3,
+      "replication_seed": 225609003,
+      "target_draw_seed": 225609006,
+      "pilot_or_design_seed": 225609014,
+      "score_seed_root": 225609007,
+      "information_seed_root": 225616003
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 4,
+      "replication_seed": 225609004,
+      "target_draw_seed": 225609007,
+      "pilot_or_design_seed": 225609015,
+      "score_seed_root": 225609008,
+      "information_seed_root": 225616004
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 5,
+      "replication_seed": 225609005,
+      "target_draw_seed": 225609008,
+      "pilot_or_design_seed": 225609016,
+      "score_seed_root": 225609009,
+      "information_seed_root": 225616005
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 6,
+      "replication_seed": 225609006,
+      "target_draw_seed": 225609009,
+      "pilot_or_design_seed": 225609017,
+      "score_seed_root": 225609010,
+      "information_seed_root": 225616006
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 7,
+      "replication_seed": 225609007,
+      "target_draw_seed": 225609010,
+      "pilot_or_design_seed": 225609018,
+      "score_seed_root": 225609011,
+      "information_seed_root": 225616007
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 8,
+      "replication_seed": 225609008,
+      "target_draw_seed": 225609011,
+      "pilot_or_design_seed": 225609019,
+      "score_seed_root": 225609012,
+      "information_seed_root": 225616008
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 9,
+      "replication_seed": 225609009,
+      "target_draw_seed": 225609012,
+      "pilot_or_design_seed": 225609020,
+      "score_seed_root": 225609013,
+      "information_seed_root": 225616009
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 10,
+      "replication_seed": 225609010,
+      "target_draw_seed": 225609013,
+      "pilot_or_design_seed": 225609021,
+      "score_seed_root": 225609014,
+      "information_seed_root": 225616010
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 11,
+      "replication_seed": 225609011,
+      "target_draw_seed": 225609014,
+      "pilot_or_design_seed": 225609022,
+      "score_seed_root": 225609015,
+      "information_seed_root": 225616011
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 12,
+      "replication_seed": 225609012,
+      "target_draw_seed": 225609015,
+      "pilot_or_design_seed": 225609023,
+      "score_seed_root": 225609016,
+      "information_seed_root": 225616012
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 13,
+      "replication_seed": 225609013,
+      "target_draw_seed": 225609016,
+      "pilot_or_design_seed": 225609024,
+      "score_seed_root": 225609017,
+      "information_seed_root": 225616013
+    },
+    {
+      "alpha": 1.5,
+      "budget": 8000,
+      "replication": 14,
+      "replication_seed": 225609014,
+      "target_draw_seed": 225609017,
+      "pilot_or_design_seed": 225609025,
+      "score_seed_root": 225609018,
+      "information_seed_root": 225616014
+    }
+  ]
+}

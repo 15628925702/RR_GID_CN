@@ -28,7 +28,6 @@ from rr_gid_cn.p4_integrity import compute_pilot_budget, sha256_file, validate_e
 from rr_gid_cn.policies import frank_wolfe, objective, uniform_probabilities
 from rr_gid_cn.empirical_generator import load_gas_generator
 from rr_gid_cn.s1_gate import discriminative_design, largest_remainder_counts
-from rr_gid_cn.vaeac import learned_information
 
 CAMPAIGN_KEYS = {
     "batch7": ("x_batch7", "phi_batch7"),
@@ -64,7 +63,48 @@ def seed_entry(campaign: str, budget: int, replication: int) -> dict:
     }
 
 
-def fit_beta_dag(phi_pool: np.ndarray, mu_t: np.ndarray) -> np.ndarray:
+def affine_match_moments(source: np.ndarray, target: np.ndarray) -> np.ndarray:
+    """Map source rows so they share the target's mean and covariance."""
+    src = np.asarray(source, dtype=float)
+    tgt = np.asarray(target, dtype=float)
+    dim = src.shape[1]
+    mu_s, mu_t = src.mean(0), tgt.mean(0)
+    cov_s = np.cov(src, rowvar=False) + 1e-6 * np.eye(dim)
+    cov_t = np.cov(tgt, rowvar=False) + 1e-6 * np.eye(dim)
+    es, us = np.linalg.eigh(0.5 * (cov_s + cov_s.T))
+    et, ut = np.linalg.eigh(0.5 * (cov_t + cov_t.T))
+    inv_sqrt_s = (us * (1.0 / np.sqrt(np.maximum(es, 1e-8)))) @ us.T
+    sqrt_t = (ut * np.sqrt(np.maximum(et, 1e-8))) @ ut.T
+    return (src - mu_s) @ (inv_sqrt_s @ sqrt_t) + mu_t
+
+
+def build_ahat_phi(cfg, gen, data, feature_fn, seed=42):
+    """Return (x_pool, phi_pool) for R2 D_A / scoring."""
+    n_ahat = int(cfg.get("ahat_pool", 8000))
+    kind = str(cfg.get("ahat_source") or "generator").strip().lower()
+    rng = np.random.default_rng(int(seed))
+    donors = np.asarray(data["ref_train"], dtype=float)
+    if kind in {"empirical", "ref_train", "knn", "reference"}:
+        x = donors[rng.choice(len(donors), size=n_ahat, replace=True)]
+        return x, feature_fn(x)
+    generated = gen.sample_full(n_ahat, seed=int(seed))
+    if kind in {"calibrated_generator", "calibrated", "moment_match", "e4"}:
+        return generated, affine_match_moments(feature_fn(generated), feature_fn(donors))
+    if kind in {"mix", "mixture", "blend"}:
+        frac = float(cfg.get("ahat_empirical_frac", 0.5))
+        n_emp = int(round(n_ahat * max(0.0, min(1.0, frac))))
+        n_gen = n_ahat - n_emp
+        parts = []
+        if n_gen:
+            parts.append(generated[:n_gen])
+        if n_emp:
+            parts.append(donors[rng.choice(len(donors), size=n_emp, replace=True)])
+        x = np.concatenate(parts, axis=0)
+        return x, feature_fn(x)
+    return generated, feature_fn(generated)
+
+
+def fit_beta_dag(phi_pool: np.ndarray, mu_t: np.ndarray, theta_bound: float = 4.0, norm_cap=2.0) -> np.ndarray:
     beta = np.zeros(16)
     for _ in range(30):
         logits = phi_pool @ beta
@@ -77,9 +117,10 @@ def fit_beta_dag(phi_pool: np.ndarray, mu_t: np.ndarray) -> np.ndarray:
         fisher = np.cov(phi_pool, rowvar=False, aweights=w) + 1e-3 * np.eye(16)
         step = np.linalg.solve(fisher, diff)
         nrm = float(np.linalg.norm(step))
-        if nrm > 2.0:
-            step *= 2.0 / nrm
-        beta = r1._project(beta + step)
+        cap = 2.0 if norm_cap is None else float(norm_cap)
+        if nrm > cap > 0:
+            step *= cap / nrm
+        beta = r1._project(beta + step, bound=theta_bound, norm_cap=norm_cap)
     return beta
 
 
@@ -115,10 +156,10 @@ def main() -> None:
     gen = load_gas_generator(cfg, data, fn, device=device)
     if args.profile:
         print(f"sampling A-hat pool device={device}", flush=True)
-    full_pool_x = gen.sample_full(8000, seed=42)
-    full_pool_phi = fn(full_pool_x)
+    full_pool_x, full_pool_phi = build_ahat_phi(cfg, gen, data, fn, seed=42)
     phi_ref = fn(data["ref_val"])
     fisher_ref = np.cov(phi_ref, rowvar=False)
+    fisher_ahat = np.cov(full_pool_phi, rowvar=False) + 1e-3 * np.eye(16)
     _, oracle_infos, p_star, _ = r1.build_oracle(data["ref_val"], phi_ref, fn, coord_panels)
     a_info = r1.gas_a_optimal_information(phi_ref, sensor_pairs)
     campaigns = [args.campaign] if args.campaign else list(cfg["campaigns"])
@@ -199,13 +240,12 @@ def main() -> None:
                 entry = dict(by_key.get((camp, int(budget), int(rep))) or seed_entry(camp, int(budget), int(rep)))
                 entry["replication"] = int(rep)
                 rng = np.random.default_rng(int(entry["replication_seed"]))
-                perm = rng.permutation(len(campaign_x))
-                half = len(campaign_x) // 2
-                pool_x = campaign_x[perm[:half]]
-                test_phi = campaign_phi[perm[half:]]
-                beta_dag = fit_beta_dag(full_pool_phi, test_phi.mean(0))
+                theta_bound = r1.cfg_theta_bound(cfg)
+                pilot_cap = r1.cfg_pilot_norm_cap(cfg)
+                norm_cap = r1.cfg_norm_cap(cfg, default=3.0)
+                beta_dag = fit_beta_dag(full_pool_phi, campaign_phi.mean(0), theta_bound=theta_bound, norm_cap=norm_cap)
                 rng_t = np.random.default_rng(int(entry["target_draw_seed"]))
-                target = pool_x[rng_t.choice(len(pool_x), size=int(budget), replace=True)]
+                target = campaign_x[rng_t.choice(len(campaign_x), size=int(budget), replace=True)]
                 target_hash = hashlib.sha256(np.ascontiguousarray(target).tobytes()).hexdigest()
                 pilot_budget = compute_pilot_budget(cfg["pilot_schedule"], int(budget))
                 remaining = int(budget) - int(pilot_budget)
@@ -216,30 +256,37 @@ def main() -> None:
                     for row in target[cursor: cursor + int(count)]:
                         pilot_obs.append((panel, row[list(panel)]))
                     cursor += int(count)
-                mu_pil = r1.gas_pilot_ht_moment(fn, pilot_obs, pilot_counts, coord_panels)
-                pool_phi = fn(pool_x)
-                beta_tilde = r1.solve_pilot_beta(mu_pil, pool_phi)
-                if getattr(gen, "kind", "") == "empirical_knn":
-                    n_outer = min(len(data["ref_val"]), int(cfg.get("information_outer_rows", 512)))
-                    rng_info = np.random.default_rng(int(entry["information_seed_root"]))
-                    outer_idx = rng_info.choice(len(data["ref_val"]), size=n_outer, replace=False)
-                    _, learned_stack, _ = gen.panel_information(beta_tilde, coord_panels, data["ref_val"][outer_idx])
-                else:
-                    _, learned_stack = learned_information(
-                        gen, beta_tilde, coord_panels,
-                        n_tilted=int(cfg.get("gen_info_tilted", 64)),
-                        n_conditional=int(cfg.get("gen_info_cond", 16)),
-                        seed=int(entry["information_seed_root"]), feature_fn=fn,
-                    )
+                mu_pil = r1.pilot_moment(
+                    cfg, gen=gen, fn=fn, pilot_obs=pilot_obs,
+                    pilot_counts=pilot_counts, coord_panels=coord_panels,
+                )
+                beta_tilde = r1.solve_pilot_beta(
+                    mu_pil, full_pool_phi,
+                    steps=100 if cfg.get("pilot_steps") is None else int(cfg["pilot_steps"]),
+                    theta_bound=theta_bound,
+                    norm_cap=pilot_cap,
+                    ridge=1e-3 if cfg.get("pilot_ridge") is None else float(cfg["pilot_ridge"]),
+                    max_step_norm=None if cfg.get("pilot_max_step_norm") in (None, "null") else float(cfg["pilot_max_step_norm"]),
+                    ess_target=None if cfg.get("pilot_ess_target") in (None, "null") else float(cfg["pilot_ess_target"]),
+                )
+                score_init = r1.scoring_init_beta(beta_tilde, cfg)
+                info_beta = r1.information_beta(beta_tilde, cfg)
+                gen_fisher, learned_stack, a_stack = r1.design_panel_information(
+                    gen, info_beta, coord_panels, data["ref_val"], cfg, entry["information_seed_root"],
+                    sensor_pairs=sensor_pairs, phi_val=phi_ref, feature_fn=fn,
+                )
                 learned = {panel: learned_stack[i] for i, panel in enumerate(coord_panels)}
+                rr_fisher = r1.rr_design_fisher(cfg, fisher_ref, gen_fisher, pool_fisher=fisher_ahat)
                 rr_p, rr_gap, _ = frank_wolfe(
-                    fisher_ref, learned_stack, np.ones(len(coord_panels)),
+                    rr_fisher, learned_stack, np.ones(len(coord_panels)),
                     uniform_probabilities(len(coord_panels)), tolerance=1e-4, max_iter=300,
                 )
+                rr_p = r1.stabilize_design(rr_p, cfg)
                 a_p, _, _ = frank_wolfe(
-                    np.eye(16), a_info, np.ones(len(coord_panels)),
+                    np.eye(16), a_stack, np.ones(len(coord_panels)),
                     uniform_probabilities(len(coord_panels)), tolerance=1e-4, max_iter=300,
                 )
+                a_p = r1.stabilize_design(a_p, cfg)
                 disc_p = None
                 if "Discriminative Score OED" in pending:
                     disc_p = discriminative_design(
@@ -248,6 +295,7 @@ def main() -> None:
                         hidden=int(cfg.get("mlp_hidden", 64)),
                         steps=int(cfg.get("mlp_steps", 100)), feature_fn=fn,
                     )
+                    disc_p = r1.stabilize_design(disc_p, cfg)
                 policy_p = {
                     "Uniform SQD": uniform_probabilities(len(coord_panels)),
                     "A-OSQD": a_p,
@@ -267,13 +315,18 @@ def main() -> None:
                             main_obs.append((panel, row[list(panel)]))
                         cursor += int(count)
                     beta_hat = r1.score_beta(
-                        gen, beta_tilde, pilot_obs + main_obs, coord_panels, pool_phi, learned, fn,
+                        gen, score_init, pilot_obs + main_obs, coord_panels, full_pool_phi, learned, fn,
                         n_cond=int(cfg.get("gen_info_cond", 16)),
                         seed=int(entry["score_seed_root"]),
                         steps=int(cfg["scoring_steps"]),
                         max_step_norm=float(cfg["scoring_max_step_norm"]),
+                        theta_bound=theta_bound,
+                        norm_cap=norm_cap,
                     )
+                    beta_hat = r1.apply_score_radius(beta_hat, beta_tilde, cfg)
                     loss = r1.bregman_projection_loss(full_pool_phi, beta_hat, beta_dag)
+                    stats = r1.allocation_stats(probabilities)
+                    beta_norm = float(np.linalg.norm(beta_hat))
                     rows.append({
                         "schema_version": "paper-result-v1",
                         "experiment": "gas_natural",
@@ -287,6 +340,21 @@ def main() -> None:
                         "primary_loss": float(loss),
                         "projection_loss": float(loss),
                         "design_ratio_main": float(objective(fisher_ref, oracle_infos, probabilities, costs) / max(phi_star, 1e-12)),
+                        "beta_hat": beta_hat.tolist(),
+                        "beta_hat_norm": beta_norm,
+                        "beta_dag_norm": float(np.linalg.norm(beta_dag)),
+                        "beta_tilde_norm": float(np.linalg.norm(beta_tilde)),
+                        "score_init_norm": float(np.linalg.norm(score_init)),
+                        "information_at": str(cfg.get("information_at") or "pilot"),
+                        "info_beta_norm": float(np.linalg.norm(info_beta)),
+                        "rr_fisher": str(cfg.get("rr_fisher") or "generator"),
+                        "pilot_moment": str(cfg.get("pilot_moment") or "ht"),
+                        "score_radius": str(cfg.get("score_radius") or "cap"),
+                        "design_uniform_mix": float(cfg.get("design_uniform_mix") or 0.0),
+                        "design_max_share": cfg.get("design_max_share"),
+                        "hit_norm_cap": bool(norm_cap is not None and beta_norm >= float(norm_cap) - 1e-8),
+                        "theta_norm_cap": None if norm_cap is None else float(norm_cap),
+                        "theta_bound": float(theta_bound),
                         "target_draw_sha256": target_hash,
                         "pilot_budget": int(pilot_counts.sum()),
                         "fw_gap": float(rr_gap) if name == "RR-GID" else None,
@@ -299,7 +367,7 @@ def main() -> None:
                         "checkpoint_path": str(ckpt_path),
                         "seed_manifest_sha256": seed_manifest_sha,
                         "experiment_mode": cfg.get("experiment_mode"),
-                        "provenance_schema": "gas-natural-v1-provenance",
+                        "provenance_schema": "gas-natural-v2-provenance",
                         "replication_seed": int(entry["replication_seed"]),
                         "target_draw_seed": int(entry["target_draw_seed"]),
                         "pilot_or_design_seed": int(entry["pilot_or_design_seed"]),
@@ -314,6 +382,7 @@ def main() -> None:
                         "score_qmc_order": int(cfg.get("score_qmc_order", 0)),
                         "information_qmc_order": int(cfg.get("information_qmc_order", 0)),
                         "allocated_observations": int(budget),
+                        **stats,
                     })
                 r1._append_jsonl(out, rows)
                 if args.profile:

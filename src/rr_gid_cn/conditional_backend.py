@@ -8,19 +8,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from collections import OrderedDict
+from contextlib import contextmanager
 import os
 from pathlib import Path
 from typing import Any
-from time import perf_counter
+from time import perf_counter, sleep
 
 import numpy as np
 
 from .rrgid import psd_project
 from .synthetic_oracle import (
+    _can_cuda_qmc,
     _conditional_qmc_at_order,
     _conditional_parameters,
+    _cuda_qmc_max_rows,
+    _dictionary_features_of,
     _nested_qmc_normals,
     _record_workload,
+    _release_cuda_workspace,
     conditional_component_posterior_batch,
     feature_map,
     inverse_warp,
@@ -112,6 +117,8 @@ def _cached_cuda_basis(basis: "ConditionalFeatureBasis", device):
             _CACHE_COUNTERS["gpu_cache_hit"] += 1
             return cached[0], cached[1]
     _CACHE_COUNTERS["gpu_cache_miss"] += 1
+    if getattr(basis, "storage_path", None) or isinstance(getattr(basis, "phi_nodes", None), np.memmap):
+        return None
     if int(np.asarray(basis.phi_nodes).nbytes) > _gpu_cache_limit_bytes():
         return None
     try:
@@ -159,6 +166,40 @@ def _hot_dtype(name: str) -> np.dtype:
     if name == "float64":
         return np.float64
     raise ValueError(f"unsupported hot dtype: {name}")
+
+
+def _close_memmap(arr) -> None:
+    mmap = getattr(arr, "_mmap", None)
+    if mmap is None:
+        return
+    try:
+        arr.flush()
+    except Exception:
+        pass
+    try:
+        mmap.close()
+    except Exception:
+        pass
+
+
+@contextmanager
+def _bound_phi_nodes(basis: "ConditionalFeatureBasis"):
+    """Map at most one spilled score basis at a time.
+
+    Keeping dozens of order-14 USB memmaps open caused a native access
+    violation on E3.  Files stay on disk; only the current reduction is mapped.
+    """
+    path = getattr(basis, "storage_path", None)
+    shape = getattr(basis, "node_shape", None)
+    if path and shape is not None:
+        mapped = np.memmap(path, mode="r", dtype=_hot_dtype(str(basis.dtype)), shape=tuple(int(x) for x in shape))
+        try:
+            yield mapped
+        finally:
+            _close_memmap(mapped)
+            del mapped
+    else:
+        yield basis.phi_nodes
 
 
 @dataclass
@@ -297,9 +338,14 @@ class ConditionalFeatureBasis:
     seed: int
     dtype: str
     n_nodes: int = 0
+    storage_path: str | Path | None = None
+    node_shape: tuple[int, ...] | None = None
 
     def __post_init__(self) -> None:
-        self.n_nodes = int(self.phi_nodes.shape[2])
+        if self.node_shape is not None:
+            self.n_nodes = int(self.node_shape[2])
+        else:
+            self.n_nodes = int(self.phi_nodes.shape[2])
 
     def conditional_mean(self, beta: np.ndarray) -> np.ndarray:
         mean, _cov = self._reduce(beta, want_cov=False)
@@ -334,6 +380,13 @@ class ConditionalFeatureBasis:
         # exponential-weight contraction uses the hot dtype.
         compute_dtype = np.float64 if str(self.dtype) == "float64" else np.float32
         beta = np.asarray(beta, dtype=compute_dtype)
+        if getattr(self, "storage_path", None) or isinstance(self.phi_nodes, np.memmap):
+            # Laptop CUDA + order-14 memmap copies caused a native access
+            # violation on E3 (~200–480 rows/panel).  The streaming CPU
+            # reduction is the same estimator and stays in host RAM bounds.
+            return self._reduce_streaming(
+                beta, want_cov=want_cov, row_indices=row_indices,
+            )
         device = _cuda_for_basis()
         if device is not None and compute_dtype == np.float32:
             reduced = self._reduce_cuda(
@@ -341,10 +394,6 @@ class ConditionalFeatureBasis:
             )
             if reduced is not None:
                 return reduced
-        if isinstance(self.phi_nodes, np.memmap):
-            return self._reduce_streaming(
-                beta, want_cov=want_cov, row_indices=row_indices,
-            )
         compute_dtype = np.float64 if str(self.dtype) == "float64" else np.float32
         if row_indices is None:
             phi = self.phi_nodes.astype(compute_dtype, copy=False)
@@ -412,7 +461,16 @@ class ConditionalFeatureBasis:
                     cached = _cached_cuda_basis(self, device)
                     if cached is not None:
                         cached_phi, cached_log_post = cached
-                        if row_indices is None:
+                        # The resident cache holds the full panel tensor.  When
+                        # max_rows chunks that tensor, width is the chunk size,
+                        # not cached_phi.shape[0].  Reusing the uncut tensor
+                        # here made E3 (≈200 rows/panel, order-14) reshape
+                        # 206×4×16384 logits into [122, 4, 16384].
+                        if (
+                            row_indices is None
+                            and start == 0
+                            and int(len(chunk_indices)) == int(cached_phi.shape[0])
+                        ):
                             phi, log_post = cached_phi, cached_log_post
                         else:
                             idx_t = torch.as_tensor(chunk_indices, dtype=torch.long, device=device)
@@ -477,62 +535,64 @@ class ConditionalFeatureBasis:
         block.  This is needed for formal-budget score bases whose stored
         float32 representation is larger than host RAM at calibrated orders.
         """
-        if row_indices is None:
-            selected = np.arange(self.phi_nodes.shape[0], dtype=np.int64)
-        else:
-            selected = np.asarray(row_indices, dtype=np.int64)
-        n_rows = int(len(selected))
-        n_comp = int(self.phi_nodes.shape[1])
-        n_nodes = int(self.phi_nodes.shape[2])
-        rank = int(self.phi_nodes.shape[3])
-        compute_dtype = np.float64 if str(self.dtype) == "float64" else np.float32
-        means = np.empty((n_rows, rank), dtype=np.float64)
-        covariances = np.empty((n_rows, rank, rank), dtype=np.float64) if want_cov else None
-        for row_start in range(0, n_rows, max(1, int(row_chunk))):
-            row_stop = min(row_start + max(1, int(row_chunk)), n_rows)
-            width = row_stop - row_start
-            running_max = np.full(width, -np.inf, dtype=compute_dtype)
-            denominator = np.zeros(width, dtype=np.float64)
-            numerator = np.zeros((width, rank), dtype=np.float64)
-            second = np.zeros((width, rank, rank), dtype=np.float64) if want_cov else None
-            selected_rows = selected[row_start:row_stop]
-            log_posterior = self.component_log_posterior[selected_rows, :, None]
-            for node_start in range(0, n_nodes, max(1, int(node_chunk))):
-                node_stop = min(node_start + max(1, int(node_chunk)), n_nodes)
-                phi = np.asarray(
-                    self.phi_nodes[selected_rows, :, node_start:node_stop, :],
-                    dtype=compute_dtype,
-                )
-                # Flatten the feature coordinate before the matrix-vector
-                # product.  ``einsum`` here creates a large contraction plan
-                # for every row/node block and becomes the dominant cost when
-                # all 120 panels are reduced from disk-backed bases.  The
-                # equivalent GEMM path is both numerically identical (up to
-                # normal BLAS rounding) and substantially faster.
-                logits = (
-                    phi.reshape(-1, rank) @ beta
-                ).reshape(width, n_comp, node_stop - node_start) + log_posterior
-                block_max = logits.max(axis=(1, 2))
-                new_max = np.maximum(running_max, block_max)
-                old_scale = np.zeros(width, dtype=compute_dtype)
-                finite = np.isfinite(running_max)
-                old_scale[finite] = np.exp(running_max[finite] - new_max[finite])
-                weights = np.exp(logits - new_max[:, None, None])
-                denominator = denominator * old_scale + weights.sum(axis=(1, 2))
-                flat_phi = phi.reshape(width, -1, rank)
-                flat_weights = weights.reshape(width, -1)
-                block_numerator = np.matmul(
-                    flat_weights[:, None, :], flat_phi,
-                )[:, 0, :]
-                numerator = numerator * old_scale[:, None] + block_numerator
-                if want_cov:
-                    assert second is not None
-                    block_second = np.matmul(
-                        (flat_phi * flat_weights[:, :, None]).transpose(0, 2, 1),
-                        flat_phi,
+        with _bound_phi_nodes(self) as phi_nodes:
+            shape = tuple(int(x) for x in (self.node_shape or phi_nodes.shape))
+            if row_indices is None:
+                selected = np.arange(shape[0], dtype=np.int64)
+            else:
+                selected = np.asarray(row_indices, dtype=np.int64)
+            n_rows = int(len(selected))
+            n_comp = int(shape[1])
+            n_nodes = int(shape[2])
+            rank = int(shape[3])
+            compute_dtype = np.float64 if str(self.dtype) == "float64" else np.float32
+            means = np.empty((n_rows, rank), dtype=np.float64)
+            covariances = np.empty((n_rows, rank, rank), dtype=np.float64) if want_cov else None
+            for row_start in range(0, n_rows, max(1, int(row_chunk))):
+                row_stop = min(row_start + max(1, int(row_chunk)), n_rows)
+                width = row_stop - row_start
+                running_max = np.full(width, -np.inf, dtype=compute_dtype)
+                denominator = np.zeros(width, dtype=np.float64)
+                numerator = np.zeros((width, rank), dtype=np.float64)
+                second = np.zeros((width, rank, rank), dtype=np.float64) if want_cov else None
+                selected_rows = selected[row_start:row_stop]
+                log_posterior = self.component_log_posterior[selected_rows, :, None]
+                for node_start in range(0, n_nodes, max(1, int(node_chunk))):
+                    node_stop = min(node_start + max(1, int(node_chunk)), n_nodes)
+                    phi = np.asarray(
+                        phi_nodes[selected_rows, :, node_start:node_stop, :],
+                        dtype=compute_dtype,
                     )
-                    second = second * old_scale[:, None, None] + block_second
-                running_max = new_max
+                    # Flatten the feature coordinate before the matrix-vector
+                    # product.  ``einsum`` here creates a large contraction plan
+                    # for every row/node block and becomes the dominant cost when
+                    # all 120 panels are reduced from disk-backed bases.  The
+                    # equivalent GEMM path is both numerically identical (up to
+                    # normal BLAS rounding) and substantially faster.
+                    logits = (
+                        phi.reshape(-1, rank) @ beta
+                    ).reshape(width, n_comp, node_stop - node_start) + log_posterior
+                    block_max = logits.max(axis=(1, 2))
+                    new_max = np.maximum(running_max, block_max)
+                    old_scale = np.zeros(width, dtype=compute_dtype)
+                    finite = np.isfinite(running_max)
+                    old_scale[finite] = np.exp(running_max[finite] - new_max[finite])
+                    weights = np.exp(logits - new_max[:, None, None])
+                    denominator = denominator * old_scale + weights.sum(axis=(1, 2))
+                    flat_phi = phi.reshape(width, -1, rank)
+                    flat_weights = weights.reshape(width, -1)
+                    block_numerator = np.matmul(
+                        flat_weights[:, None, :], flat_phi,
+                    )[:, 0, :]
+                    numerator = numerator * old_scale[:, None] + block_numerator
+                    if want_cov:
+                        assert second is not None
+                        block_second = np.matmul(
+                            (flat_phi * flat_weights[:, :, None]).transpose(0, 2, 1),
+                            flat_phi,
+                        )
+                        second = second * old_scale[:, None, None] + block_second
+                    running_max = new_max
             safe = np.maximum(denominator, 1e-300)
             mean = numerator / safe[:, None]
             means[row_start:row_stop] = mean
@@ -687,13 +747,29 @@ def build_conditional_feature_basis(
                     phi_nodes[row_start:row_stop, k, start:stop, :] = phi_chunk.astype(
                         hot, copy=False,
                     )
+    spilled_path = None
     if mapped is not None:
-        mapped.flush()
+        last_exc = None
+        for attempt in range(6):
+            try:
+                mapped.flush()
+                last_exc = None
+                break
+            except OSError as exc:
+                last_exc = exc
+                if getattr(exc, "winerror", None) != 433 or attempt == 5:
+                    raise
+                sleep(2.0 * (attempt + 1))
+        if last_exc is not None:
+            raise last_exc
+        _close_memmap(mapped)
+        spilled_path = str(path)
+        phi_nodes = np.empty((0, 0, 0, 0), dtype=hot)
     _bump(
-        feature_nodes_built=int(phi_nodes.size // max(phi_nodes.shape[-1], 1)),
+        feature_nodes_built=int(np.prod(shape) // max(shape[-1], 1)),
         component_nodes=int(n_comp * n_nodes),
         cache_miss=1,
-        bytes_cached=int(phi_nodes.nbytes + log_post.nbytes),
+        bytes_cached=int(np.prod(shape) * np.dtype(hot).itemsize + log_post.nbytes),
     )
     return ConditionalFeatureBasis(
         panel=panel,
@@ -703,6 +779,8 @@ def build_conditional_feature_basis(
         qmc_order=int(order),
         seed=int(seed),
         dtype=str(dtype),
+        storage_path=spilled_path,
+        node_shape=tuple(int(x) for x in shape),
     )
 
 
@@ -787,7 +865,7 @@ class DirectPanelInformationBasis:
         step = max(1, int(self.row_chunk))
         for start in range(0, len(rows), step):
             stop = min(start + step, len(rows))
-            if _cuda_for_basis() is not None and self.feature_fn is None:
+            if _can_cuda_qmc(self.feature_fn):
                 estimate = tilted_conditional_mean_qmc_nested(
                     self.mixture,
                     beta,
@@ -796,7 +874,7 @@ class DirectPanelInformationBasis:
                     int(self.qmc_order),
                     seed=int(seed),
                     scale=self.scale,
-                    feature_fn=None,
+                    feature_fn=self.feature_fn,
                     return_orders=(int(self.qmc_order),),
                 )[int(self.qmc_order)]
             else:
@@ -1032,6 +1110,10 @@ class FixedConditionalMean:
         # every step, which made a four-step bulk run roughly four times
         # slower while evaluating the same mathematical approximation.
         if self._basis is None:
+            print(
+                f"building score basis panel={tuple(self.panel)} rows={len(rows)} order={int(self.order)}",
+                flush=True,
+            )
             self._basis = build_conditional_feature_basis(
                 self.mixture,
                 rows,
@@ -1074,41 +1156,52 @@ class DirectConditionalMean:
     row_chunk: int = 128
     cache_dtype: str = "float32"
     last_converged: bool = True
+    storage_path: str | Path | None = None
     _fallback: FixedConditionalMean | None = field(default=None, init=False, repr=False)
     last_diagnostics: list[dict[str, Any]] = field(default_factory=list, init=False, repr=False)
 
     def conditional_mean(self, beta: np.ndarray) -> np.ndarray:
         rows = np.atleast_2d(np.asarray(self.rows, dtype=float))
+        beta = np.asarray(beta, dtype=np.float64)
         if len(rows) == 0:
-            return np.zeros((0, len(np.asarray(beta))))
-        if self.feature_fn is not None or _cuda_for_basis() is None:
-            if self._fallback is None:
-                self._fallback = FixedConditionalMean(
-                    self.mixture, rows, self.panel, int(self.seed), self.scale,
-                    self.feature_fn, order=int(self.order), row_chunk=int(self.row_chunk),
-                    cache_dtype=str(self.cache_dtype),
-                )
-            value = self._fallback.conditional_mean(beta)
-            self.last_diagnostics = [{"direct_cuda": False, **self._fallback.last_diagnostics[0]}]
-            return value
+            return np.zeros((0, len(beta)))
+        # Never materialise a (rows, components, nodes, features) basis: E3
+        # dictionary features used to fall back to memmap spill, which is
+        # forbidden on G: and currently unusable on the repaired-needed H: volume.
+        can_cuda = _can_cuda_qmc(self.feature_fn)
+        step = max(1, _cuda_qmc_max_rows(int(self.order)) if can_cuda else int(self.row_chunk))
         pieces = []
-        step = max(1, int(self.row_chunk))
-        for start in range(0, len(rows), step):
-            stop = min(start + step, len(rows))
-            result = tilted_conditional_mean_qmc_nested(
-                self.mixture,
-                np.asarray(beta, dtype=np.float64),
-                rows[start:stop],
-                tuple(self.panel),
-                int(self.order),
-                seed=int(self.seed),
-                scale=self.scale,
-                feature_fn=None,
-                return_orders=(int(self.order),),
-            )
-            pieces.append(np.asarray(result[int(self.order)], dtype=np.float64))
+        try:
+            for start in range(0, len(rows), step):
+                stop = min(start + step, len(rows))
+                chunk = rows[start:stop]
+                if can_cuda:
+                    result = tilted_conditional_mean_qmc_nested(
+                        self.mixture,
+                        beta,
+                        chunk,
+                        tuple(self.panel),
+                        int(self.order),
+                        seed=int(self.seed),
+                        scale=self.scale,
+                        feature_fn=self.feature_fn,
+                        return_orders=(int(self.order),),
+                    )
+                    pieces.append(np.asarray(result[int(self.order)], dtype=np.float64))
+                else:
+                    pieces.append(
+                        tilted_conditional_mean_qmc(
+                            self.mixture, beta, chunk, tuple(self.panel),
+                            int(self.order), seed=int(self.seed), scale=self.scale,
+                            feature_fn=self.feature_fn,
+                        )
+                    )
+        finally:
+            if can_cuda:
+                _release_cuda_workspace()
         self.last_diagnostics = [{
-            "direct_cuda": True,
+            "direct_cuda": bool(can_cuda),
+            "dictionary_features": _dictionary_features_of(self.feature_fn) is not None,
             "n_rows": int(len(rows)),
             "row_chunk": int(step),
             "order": int(self.order),
@@ -1131,7 +1224,7 @@ class IndexedConditionalMean:
         self.last_diagnostics = [{
             "shared_basis": True,
             "n_rows": int(len(indices)),
-            "basis_rows": int(self.basis.phi_nodes.shape[0]),
+            "basis_rows": int((self.basis.node_shape or self.basis.phi_nodes.shape)[0]),
             "qmc_order": int(self.basis.qmc_order),
         }]
         return value

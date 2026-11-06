@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import pickle
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -213,6 +214,9 @@ def main() -> None:
                 seed=entry["information_seed_root"],
                 feature_fn=fn,
             )
+            score_spill = None
+            if cfg.get("score_storage_dir"):
+                score_spill = str(Path(cfg["score_storage_dir"]) / f"seq{int(seq)}_camp{int(camp)}")
             rows = run_paper_replication(
                 mixture, scale, panels, budget, int(entry["replication_seed"]), prepared,
                 scoring_steps=int(cfg["scoring_steps"]),
@@ -225,6 +229,8 @@ def main() -> None:
                 information_scrambles=int(cfg.get("information_scrambles", 2)),
                 hot_dtype=str(cfg.get("dtype", "float32")),
                 score_backend=str(cfg.get("score_backend", "cached_qmc")),
+                score_direct_cuda=bool(cfg.get("score_direct_cuda", False)),
+                score_storage_dir=score_spill,
                 information_inner=(
                     "cached_qmc"
                     if str(cfg.get("information_backend", "cached_qmc_cross")) == "cached_qmc_cross"
@@ -234,6 +240,7 @@ def main() -> None:
                 pilot_schedule=cfg["pilot_schedule"],
                 seed_manifest_entry=entry,
                 mlp_steps=int(cfg.get("mlp_steps", 100)),
+                rr_design_fisher=str(cfg.get("rr_design_fisher", "beta_star")),
                 feature_fn=fn,
                 design_info_basis=design_basis,
                 generator_training_seconds=float(train_seconds) if camp == 0 else 0.0,
@@ -270,6 +277,8 @@ def main() -> None:
                     row["cumulative_method_seconds"] = float(cum_disc)
                     row["method_specific_seconds"] = float(camp_disc)
             _append_jsonl(out, rows)
+            if score_spill and bool(cfg.get("score_storage_cleanup", True)):
+                shutil.rmtree(score_spill, ignore_errors=True)
             if args.profile:
                 for row in rows:
                     print(

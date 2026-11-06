@@ -1,0 +1,41 @@
+{
+  "schema_version": "fixed-vs-cached-equivalence-v1",
+  "order": 14,
+  "scrambles": 1,
+  "seed": 202609999,
+  "n_rows_per_panel": 24,
+  "n_betas": 3,
+  "tolerance": 1e-05,
+  "max_abs_difference": 6.019183707017817e-09,
+  "per_panel": [
+    {
+      "panel": [
+        0,
+        1
+      ],
+      "max_abs_difference": 1.6964037397038112e-09,
+      "n_betas": 3,
+      "cached_dtype": "float32"
+    },
+    {
+      "panel": [
+        0,
+        2
+      ],
+      "max_abs_difference": 3.674671497644333e-09,
+      "n_betas": 3,
+      "cached_dtype": "float32"
+    },
+    {
+      "panel": [
+        0,
+        3
+      ],
+      "max_abs_difference": 6.019183707017817e-09,
+      "n_betas": 3,
+      "cached_dtype": "float32"
+    }
+  ],
+  "passed": true,
+  "note": "cached basis stores float32 nodes; the tolerance reflects that storage dtype, not an algorithmic difference."
+}

@@ -44,6 +44,28 @@ def load_vaeac_checkpoint(path, device="cpu", expected_dim=None):
     return model, checkpoint
 
 
+class PanelPhiNet(nn.Module):
+    """Independent 16-d -> E[phi] head per Gas panel, matching kNN's geometry."""
+
+    def __init__(self, n_panels=120, obs_dim=16, hidden=128, out=16, embed=32):
+        super().__init__()
+        del embed
+        self.nets = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(int(obs_dim), int(hidden)),
+                nn.Tanh(),
+                nn.Linear(int(hidden), int(hidden)),
+                nn.Tanh(),
+                nn.Linear(int(hidden), int(out)),
+            )
+            for _ in range(int(n_panels))
+        ])
+
+    def forward(self, observed, panel_ids):
+        pid = int(panel_ids[0].item())
+        return self.nets[pid](observed)
+
+
 class VAEAC(nn.Module):
     """VAEAC with proposal q, conditional prior p and Gaussian decoder."""
     def __init__(self, dim=16, latent=16, hidden=128, seed=0, k_prior=4, gmm_prior=False):
@@ -151,10 +173,18 @@ class VAEACGenerator:
             self.scale = np.ones(self._legacy_reference.shape[1]) if scale is None else np.asarray(scale, float)
             self.alpha = float(alpha)
             self.feature_fn = feature_map if feature_fn is None else feature_fn
+            self.kind = "legacy_reference"
             return
         self.model = model.eval().to(device)
         self.device, self.scale, self.alpha = device, np.asarray(scale if scale is not None else np.ones(model.dim)), float(alpha)
         self.feature_fn = (lambda x: feature_map(x, self.scale)) if feature_fn is None else feature_fn
+        self.kind = "vaeac"
+        self.phi_net = None
+        self.phi_net_step1 = None
+        self.phi_net_zero = None
+        self.phi_info_scale = None
+        self.phi_info_scale_zero = None
+        self.phi_info_mix_a = None
 
     @property
     def dimension(self):
@@ -282,6 +312,168 @@ class VAEACGenerator:
         if pool_weights is not None: logits += np.log(np.asarray(pool_weights) + 1e-300)
         logits -= logits.max(); weights = np.exp(logits)
         return float(weights.sum() ** 2 / np.sum(weights ** 2) / len(weights))
+
+    def panel_information(self, beta, panels, outer_x, n_conditional=32, seed=0, feature_fn=None, neighbors=None, estimator="imp"):
+        """I_S on the same outer queries as the Gas kNN RISK-2 reference.
+
+        ``learned_information`` draws a fresh tilted pool from the generator.
+        That mixes Monte Carlo noise into panel ranking.  Matching the empirical
+        operator uses the frozen outer table and only asks the network for
+        E[phi | x_S].
+        """
+        del neighbors
+        from .empirical_generator import _project_psd, _stable_tilt_weights
+        from .generator_validation import weighted_covariance
+
+        fn = self.feature_fn if feature_fn is None else feature_fn
+        outer = np.asarray(outer_x, dtype=float)
+        outer_phi = fn(outer)
+        outer_w = _stable_tilt_weights(outer_phi, np.asarray(beta, dtype=float))
+        fisher = _project_psd(weighted_covariance(outer_phi, outer_w))
+        means, infos = [], []
+        kind = str(estimator or "imp").strip().lower()
+        if kind in {"auto", "default", ""}:
+            kind = "phi_net" if self.phi_net is not None else "imp"
+        use_zero = (
+            kind in {"phi_net", "masked_mlp", "panel_embed"}
+            and self.phi_net_zero is not None
+            and float(np.linalg.norm(np.asarray(beta, dtype=float))) <= 1e-12
+        )
+        if use_zero:
+            saved = self.phi_net
+            self.phi_net = self.phi_net_zero
+        try:
+            for index, panel in enumerate(panels):
+                if kind in {"phi_net", "masked_mlp", "panel_embed"} and self.phi_net is not None:
+                    conditional = self.conditional_mean_phi_net(outer[:, list(panel)], panel, index)
+                elif kind in {"prior_decode", "decode", "mean_field"}:
+                    conditional = self.conditional_mean_prior_decode(outer[:, list(panel)], panel, feature_fn=fn)
+                else:
+                    conditional = imp_conditional_mean_from_generator(
+                        self,
+                        beta,
+                        outer[:, list(panel)],
+                        panel,
+                        n=int(n_conditional),
+                        seed=int(seed) + int(index),
+                        feature_fn=fn,
+                    )
+                means.append(conditional)
+                infos.append(_project_psd(weighted_covariance(conditional, outer_w)))
+        finally:
+            if use_zero:
+                self.phi_net = saved
+        infos = np.asarray(infos)
+        mix_kind = kind in {"phi_net", "masked_mlp", "panel_embed"}
+        if use_zero:
+            return fisher, infos, np.asarray(means)
+        if mix_kind and self.phi_info_mix_a is not None and self.phi_net_step1 is not None:
+            infos1 = []
+            saved = self.phi_net
+            self.phi_net = self.phi_net_step1
+            try:
+                for index, panel in enumerate(panels):
+                    conditional = self.conditional_mean_phi_net(outer[:, list(panel)], panel, index)
+                    infos1.append(_project_psd(weighted_covariance(conditional, outer_w)))
+            finally:
+                self.phi_net = saved
+            infos1 = np.asarray(infos1)
+            if self.phi_info_scale is not None:
+                scale = np.asarray(self.phi_info_scale, dtype=float).reshape(-1)
+                if len(scale) != len(infos1):
+                    raise ValueError("phi_info_scale length must match the panel library")
+                infos1 = np.stack([_project_psd(info * float(factor)) for info, factor in zip(infos1, scale)])
+            mix_a = float(self.phi_info_mix_a)
+            infos = np.stack([_project_psd((1.0 - mix_a) * i0 + mix_a * i1) for i0, i1 in zip(infos, infos1)])
+        elif self.phi_info_scale is not None and mix_kind:
+            scale = np.asarray(self.phi_info_scale, dtype=float).reshape(-1)
+            if len(scale) != len(infos):
+                raise ValueError("phi_info_scale length must match the panel library")
+            infos = np.stack([_project_psd(info * float(factor)) for info, factor in zip(infos, scale)])
+        if (
+            mix_kind
+            and self.phi_info_scale_zero is not None
+            and float(np.linalg.norm(np.asarray(beta, dtype=float))) <= 1e-12
+        ):
+            scale0 = np.asarray(self.phi_info_scale_zero, dtype=float).reshape(-1)
+            if len(scale0) != len(infos):
+                raise ValueError("phi_info_scale_zero length must match the panel library")
+            infos = np.stack([_project_psd(info * float(factor)) for info, factor in zip(infos, scale0)])
+        return fisher, infos, np.asarray(means)
+
+    def conditional_mean_phi_net(self, observed_batch, panel, panel_index):
+        observed = np.atleast_2d(np.asarray(observed_batch, dtype=float))
+        center = np.asarray(self.model.data_mean, dtype=np.float64)
+        spread = np.asarray(self.model.data_std, dtype=np.float64)
+        cols = list(panel)
+        scaled = (observed - center[cols]) / np.maximum(spread[cols], 1e-12)
+        obs = torch.as_tensor(scaled, dtype=torch.float32, device=self.device)
+        ids = torch.full((len(obs),), int(panel_index), dtype=torch.long, device=self.device)
+        with torch.no_grad():
+            return self.phi_net(obs, ids).cpu().numpy()
+
+    def attach_phi_net(self, state, hidden=256, kind="panel_embed", n_panels=120):
+        del kind
+        net = PanelPhiNet(n_panels=int(n_panels), hidden=int(hidden), out=16).to(self.device)
+        net.load_state_dict(state)
+        net.eval()
+        self.phi_net = net
+        return self
+
+    def attach_phi_info_scale(self, scale):
+        values = np.asarray(scale, dtype=np.float64).reshape(-1)
+        if np.any(values <= 0) or not np.isfinite(values).all():
+            raise ValueError("phi_info_scale must be positive and finite")
+        self.phi_info_scale = values
+        return self
+
+    def attach_phi_net_step1(self, state, hidden=256, n_panels=120):
+        net = PanelPhiNet(n_panels=int(n_panels), hidden=int(hidden), out=16).to(self.device)
+        net.load_state_dict(state)
+        net.eval()
+        self.phi_net_step1 = net
+        return self
+
+    def attach_phi_net_zero(self, state, hidden=256, n_panels=120):
+        net = PanelPhiNet(n_panels=int(n_panels), hidden=int(hidden), out=16).to(self.device)
+        net.load_state_dict(state)
+        net.eval()
+        self.phi_net_zero = net
+        return self
+
+    def attach_phi_info_mix_a(self, mix_a):
+        value = float(mix_a)
+        if not (0.0 <= value <= 1.0) or not np.isfinite(value):
+            raise ValueError("phi_info_mix_a must be finite and in [0, 1]")
+        self.phi_info_mix_a = value
+        return self
+
+    def attach_phi_info_scale_zero(self, scale):
+        values = np.asarray(scale, dtype=np.float64).reshape(-1)
+        if np.any(values <= 0) or not np.isfinite(values).all():
+            raise ValueError("phi_info_scale_zero must be positive and finite")
+        self.phi_info_scale_zero = values
+        return self
+
+    def conditional_mean_prior_decode(self, observed_batch, panel, feature_fn=None):
+        """E[phi | x_S] from the conditional-prior mean decode (no IMP noise)."""
+        fn = self.feature_fn if feature_fn is None else feature_fn
+        observed = np.atleast_2d(np.asarray(observed_batch, dtype=float))
+        center = np.asarray(self.model.data_mean, dtype=np.float64)
+        spread = np.asarray(self.model.data_std, dtype=np.float64)
+        cols = list(panel)
+        obs = torch.zeros(len(observed), self.dimension, device=self.device)
+        mask = torch.zeros_like(obs)
+        scaled = (observed - center[cols]) / np.maximum(spread[cols], 1e-12)
+        obs[:, cols] = torch.as_tensor(scaled, dtype=torch.float32, device=self.device)
+        mask[:, cols] = 1.0
+        with torch.no_grad():
+            p_mu, _ = self.model.prior(obs, mask)
+            recon, _ = self.model.decode_params(p_mu, mask, obs)
+            mixed = (mask * obs + (1.0 - mask) * recon).cpu().numpy()
+        raw = mixed * spread + center
+        raw[:, cols] = observed
+        return fn(raw)
 
 
 def imp_conditional_mean_from_generator(generator, beta, batch, panel, n, seed, scale=None, feature_fn=None):

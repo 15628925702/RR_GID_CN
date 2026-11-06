@@ -184,6 +184,7 @@ def run_paper_replication(
     share_score_basis: bool = True,
     score_build_on_cuda: bool = False,
     score_direct_cuda: bool = False,
+    rr_design_fisher: str = "beta_star",
 ) -> list[dict[str, Any]]:
     reset_workload_counters()
     reset_cache_counters()
@@ -281,9 +282,27 @@ def run_paper_replication(
         est_info_at_pilot = info_at_pilot
 
     plugin = np.stack([info_at_pilot[panel] for panel in panels], axis=0)
+    _, fisher_plugin = ref_cache.moments(beta_tilde)
+    fisher_kind = str(rr_design_fisher or "beta_star").strip().lower()
+    if fisher_kind in {"beta_star", "true_target", "oracle"}:
+        fisher_kind = "beta_star"
+        design_fisher = fisher
+    elif fisher_kind in {"plugin_tilde", "tilde", "pilot"}:
+        fisher_kind = "plugin_tilde"
+        design_fisher = fisher_plugin
+    else:
+        raise ValueError(
+            "rr_design_fisher must be beta_star or plugin_tilde, "
+            f"got {rr_design_fisher!r}"
+        )
+    fisher_star_op = float(np.linalg.norm(np.asarray(fisher), ord=2))
+    fisher_plugin_rel_op = float(
+        np.linalg.norm(np.asarray(fisher_plugin) - np.asarray(fisher), ord=2)
+        / max(fisher_star_op, 1e-12)
+    )
     t_fw = perf_counter()
     rr_p, rr_gap, rr_iters = frank_wolfe(
-        fisher, plugin, np.ones(len(panels)), uniform_probabilities(len(panels)),
+        design_fisher, plugin, np.ones(len(panels)), uniform_probabilities(len(panels)),
         tolerance=1e-6, max_iter=300,
     )
     time_fw = perf_counter() - t_fw
@@ -407,6 +426,7 @@ def run_paper_replication(
                     order=int(score_qmc_order),
                     row_chunk=max(1, int(adaptive_chunk_rows)),
                     cache_dtype=str(hot_dtype),
+                    storage_path=None,
                 )
                 for panel in grouped.panel_ids
             }
@@ -558,6 +578,9 @@ def run_paper_replication(
             "target_draw_sha256": target_hash,
             "seed": replication_seed,
             "fw_gap": float(rr_gap) if name == "RR-GID" else float(prepared.get("oracle_constant", {}).get("fw_gap", np.nan)),
+            "rr_design_fisher": fisher_kind,
+            "fisher_plugin_rel_op": fisher_plugin_rel_op,
+            "pilot_beta_error_norm": float(np.linalg.norm(np.asarray(beta_tilde) - np.asarray(beta_true))),
             "wall_seconds_total": float(time_target + time_pilot + time_info_build + time_fw + time_disc + time_score_build + time_est),
             "wall_seconds_basis_build": float(time_info_build + time_score_build),
             "wall_seconds_design": float(time_fw + time_disc),

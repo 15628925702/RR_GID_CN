@@ -1,0 +1,21 @@
+{
+  "artifact": "experiments\\paper\\oracle_artifact.pkl",
+  "sha256": "f41e52c4ea8b99558041d3e3e9d5bc955913e0a803342c3e7c4b0f8f73c36a38",
+  "commit": "fe2096313ff6b1d4088b586e2d8570fee5554f54",
+  "config": "configs\\paper\\oracle_calibration.yaml",
+  "alpha": 1.0,
+  "c_star": 32.83245313652122,
+  "phi_oracle": 65.66490627304243,
+  "fw_gap": 1.6331902517012935,
+  "artifact_metadata": {
+    "schema_version": "p4-oracle-artifact-v2",
+    "mixture_seed": 2026,
+    "alpha": 1.0,
+    "reference_size": 20000,
+    "large_reference_size": 20000,
+    "information_tilted_samples": 128,
+    "information_conditional_samples": 32,
+    "information_method": "cross_completion_rejection",
+    "parameter_sha256": "0f2d863303ee7c5efebca2a01db1c8fb911d98b184ddfd96d19d7ce9c7755da9"
+  }
+}

@@ -49,6 +49,22 @@ def _cuda_qmc_max_rows(order: int) -> int:
     return max(1, _CUDA_QMC_ROW_NODE_BUDGET // (1 << int(order)))
 
 
+def _dictionary_features_of(feature_fn):
+    """Return frozen dictionary specs when ``feature_fn`` came from the reuse map."""
+    if feature_fn is None:
+        return None
+    specs = getattr(feature_fn, "dictionary_features", None)
+    if not specs:
+        return None
+    return tuple((str(kind), tuple(int(c) for c in coords)) for kind, coords in specs)
+
+
+def _can_cuda_qmc(feature_fn=None) -> bool:
+    return _cuda_device() is not None and (
+        feature_fn is None or _dictionary_features_of(feature_fn) is not None
+    )
+
+
 _WORKLOAD_COUNTERS = {
     "full_rejection_calls": 0,
     "full_proposals": 0,
@@ -737,9 +753,10 @@ def tilted_conditional_mean_qmc(
     z_s = inverse_warp(rows, mixture.alpha)
     posterior = conditional_component_posterior_batch(mixture, rows, panel)
     parameters = _conditional_parameters(mixture, panel)[1]
-    if _cuda_device() is not None and feature_fn is None:
+    if _can_cuda_qmc(feature_fn):
         return _tilted_conditional_mean_qmc_torch(
             mixture, beta, rows, panel, order, seed, scale, posterior, parameters,
+            feature_fn=feature_fn,
         )
     # Vectorize all observed rows for one component.  This changes only the
     # evaluation order, not the QMC nodes or the mixture-weighted ratio, and
@@ -773,7 +790,7 @@ def _conditional_qmc_at_order(
     beta = np.asarray(beta, dtype=float)
     if len(rows) == 0:
         return np.zeros((0, beta.shape[0]))
-    use_cuda = _cuda_device() is not None and feature_fn is None
+    use_cuda = _can_cuda_qmc(feature_fn)
     max_rows = _cuda_qmc_max_rows(order) if use_cuda else len(rows)
     if len(rows) > max_rows:
         parts = []
@@ -814,7 +831,7 @@ def _conditional_qmc_ladder(
     requested = tuple(range(int(start_order), int(end_order) + 1))
     if len(rows) == 0:
         return {order: np.zeros((0, np.asarray(beta).size), dtype=float) for order in requested}
-    use_cuda = _cuda_device() is not None and feature_fn is None
+    use_cuda = _can_cuda_qmc(feature_fn)
     max_rows = _cuda_qmc_max_rows(int(end_order)) if use_cuda else len(rows)
     if len(rows) > max_rows:
         pieces = {order: [] for order in requested}
@@ -996,20 +1013,112 @@ def tilted_conditional_mean_qmc_nested(
     return _tilted_conditional_mean_qmc_torch(
         mixture, beta, rows, tuple(panel), int(order), seed, scale, posterior,
         parameters, return_orders=tuple(int(x) for x in return_orders if x is not None),
+        feature_fn=feature_fn,
     )
 
 
-def _tilted_conditional_mean_qmc_torch(mixture, beta, rows, panel, order, seed, scale, posterior, parameters, return_orders=None):
+def _phi_from_dictionary_torch(x, scale_t, specs):
+    xt = x / scale_t
+    cols = []
+    for kind, coords in specs:
+        if kind == UNARY_FEATURE:
+            cols.append(torch.tanh(xt[..., int(coords[0])]))
+        else:
+            i, j = int(coords[0]), int(coords[1])
+            cols.append(torch.tanh(xt[..., i] * xt[..., j]))
+    return torch.stack(cols, dim=-1)
+
+
+def _tilted_conditional_mean_qmc_torch_dictionary(
+    mixture, beta, rows, panel, order, seed, scale, posterior, parameters, specs, return_orders=None,
+):
+    """CUDA QMC with the E3 reuse dictionary; samples the full 16-d complement."""
+    device = _cuda_device()
+    dtype = torch.float32
+    n = 1 << int(order)
+    dim = int(mixture.dimension)
+    panel = tuple(panel)
+    complement = tuple(i for i in range(dim) if i not in panel)
+    z_s = torch.as_tensor(inverse_warp(rows, mixture.alpha), dtype=dtype, device=device)
+    normal_key = (str(device), int(n), len(complement), int(seed), "full")
+    normals = _TORCH_QMC_NORMAL_CACHE.get(normal_key)
+    if normals is None:
+        normals = torch.as_tensor(
+            _nested_qmc_normals(n, len(complement), seed=int(seed)),
+            dtype=dtype, device=device,
+        )
+        _TORCH_QMC_NORMAL_CACHE[normal_key] = normals
+        _TORCH_QMC_NORMAL_CACHE.move_to_end(normal_key)
+        while len(_TORCH_QMC_NORMAL_CACHE) > _TORCH_QMC_NORMAL_CACHE_LIMIT:
+            _TORCH_QMC_NORMAL_CACHE.popitem(last=False)
+    else:
+        _TORCH_QMC_NORMAL_CACHE.move_to_end(normal_key)
+    scale_arr = np.ones(dim, dtype=float) if scale is None else np.asarray(scale, dtype=float)
+    scale_t = torch.as_tensor(scale_arr, dtype=dtype, device=device)
+    beta_t = torch.as_tensor(np.asarray(beta), dtype=dtype, device=device)
+    cache_key = (id(mixture), tuple(panel), str(device), str(dtype), "full-dim")
+    static = _TORCH_PANEL_TENSOR_CACHE.get(cache_key)
+    if static is None:
+        static = tuple(
+            (
+                torch.as_tensor(mean_c, dtype=dtype, device=device),
+                torch.as_tensor(mean_s, dtype=dtype, device=device),
+                torch.as_tensor(gain, dtype=dtype, device=device),
+                torch.as_tensor(chol, dtype=dtype, device=device),
+            )
+            for mean_c, mean_s, _inv_ss, gain, _cond_cov, chol, _logdet in parameters
+        )
+        _TORCH_PANEL_TENSOR_CACHE[cache_key] = static
+    shift = torch.full((len(rows),), float(np.abs(np.asarray(beta)).sum()), dtype=dtype, device=device)
+    posterior_t = torch.as_tensor(posterior, dtype=dtype, device=device)
+    requested = None if return_orders is None else tuple(sorted(set(int(v) for v in return_orders)))
+    sizes = (n,) if not requested else tuple(1 << q for q in requested)
+    n_feat = len(specs)
+    numer = {size: torch.zeros((len(rows), n_feat), dtype=dtype, device=device) for size in sizes}
+    denom = {size: torch.zeros(len(rows), dtype=dtype, device=device) for size in sizes}
+    panel_idx = list(panel)
+    complement_idx = list(complement)
+    alpha = float(mixture.alpha)
+    for k, (mean_c_t, mean_s_t, gain_t, chol_t) in enumerate(static):
+        z = torch.empty((len(rows), n, dim), dtype=dtype, device=device)
+        z[:, :, panel_idx] = z_s[:, None, :]
+        cond_mean = mean_c_t[None, :] + (z_s - mean_s_t) @ gain_t.T
+        z[:, :, complement_idx] = cond_mean[:, None, :] + normals[None, :, :] @ chol_t.T
+        x = torch.sinh(alpha * z) / alpha if alpha > 0 else z
+        phi = _phi_from_dictionary_torch(x, scale_t, specs)
+        logw = torch.einsum("nkr,r->nk", phi, beta_t)
+        w = posterior_t[:, k, None] * torch.exp(logw - shift[:, None])
+        for size in sizes:
+            wp = w[:, :size]
+            numer[size] += torch.einsum("nk,nkr->nr", wp, phi[:, :size]) / size
+            denom[size] += wp.mean(dim=1)
+        del z, x, phi, logw, w
+    estimates = {
+        int(np.log2(size)): (numer[size] / denom[size][:, None].clamp_min(1e-300)).cpu().numpy()
+        for size in sizes
+    }
+    if requested:
+        return estimates
+    return estimates[int(order)]
+
+
+def _tilted_conditional_mean_qmc_torch(mixture, beta, rows, panel, order, seed, scale, posterior, parameters, return_orders=None, feature_fn=None):
     """Inference-only wrapper for the CUDA conditional integral."""
     with torch.inference_mode():
         return _tilted_conditional_mean_qmc_torch_impl(
             mixture, beta, rows, panel, order, seed, scale, posterior,
-            parameters, return_orders=return_orders,
+            parameters, return_orders=return_orders, feature_fn=feature_fn,
         )
 
 
-def _tilted_conditional_mean_qmc_torch_impl(mixture, beta, rows, panel, order, seed, scale, posterior, parameters, return_orders=None):
+def _tilted_conditional_mean_qmc_torch_impl(mixture, beta, rows, panel, order, seed, scale, posterior, parameters, return_orders=None, feature_fn=None):
     """CUDA implementation of the same complete tilted QMC integrand."""
+    specs = _dictionary_features_of(feature_fn)
+    if specs is not None:
+        return _tilted_conditional_mean_qmc_torch_dictionary(
+            mixture, beta, rows, panel, order, seed, scale, posterior, parameters, specs,
+            return_orders=return_orders,
+        )
     device = _cuda_device()
     # The bulk fixed-QMC path is calibrated against the float64 evaluator,
     # but doing the full conditional tensor in float64 on a laptop RTX 4050
@@ -1184,6 +1293,7 @@ def feature_fn_from_dictionary(features, scale: np.ndarray | None = None):
                 cols.append(np.tanh(x_tilde[..., i] * x_tilde[..., j]))
         return np.stack(cols, axis=-1)
 
+    fn.dictionary_features = tuple((kind, tuple(int(c) for c in coords)) for kind, coords in features)
     return fn
 
 

@@ -1,0 +1,135 @@
+{
+  "schema_version": "generator-information-gate-v1",
+  "evidence_level": "scientific-readiness-gate",
+  "passed": true,
+  "failed_gates": [],
+  "environments": [
+    {
+      "environment": "gas",
+      "passed": true,
+      "failed_gates": [],
+      "checkpoint": "H:\\RR_GID_CN_data\\active\\opt_20260914\\checkpoints\\vaeac_gas_opt_v6mix.pt",
+      "checkpoint_sha256": "5bb8d4818bfbf7e6792e9494e2de9bc06eeafa84f795a86221fad03d622583da",
+      "data": "G:\\0-newResearch\\4.RR_GID_CN\\data\\gas\\processed\\gas_processed.npz",
+      "data_sha256": "e87cddfa88ac690de88281747cae1e5198e110ad19c51c69974513328d4d8ffa",
+      "beta": [
+        -0.3365969620733296,
+        0.10209717381283878,
+        -0.8047908215532242,
+        0.5923580935932369,
+        0.27088889475871564,
+        -0.1239434001494193,
+        -0.13238963650440624,
+        0.12894611484111654,
+        -0.11359360932455446,
+        -0.09587451970497342,
+        0.30559295480005116,
+        0.2184381530636712,
+        -0.027215554967349426,
+        -0.03627579900708553,
+        0.06829203187878945,
+        -0.2605861424000883
+      ],
+      "information_fidelity": {
+        "passed": true,
+        "failed_gates": [],
+        "panel_ranking_spearman": 0.8024029446489341,
+        "validation_design_ratio": 1.163301486846778,
+        "top_k": 10,
+        "top_k_overlap_count": 5,
+        "top_k_overlap_fraction": 0.5,
+        "reference_top_panel_indices": [
+          77,
+          85,
+          8,
+          76,
+          46,
+          47,
+          28,
+          27,
+          84,
+          14
+        ],
+        "candidate_top_panel_indices": [
+          8,
+          76,
+          84,
+          98,
+          97,
+          94,
+          104,
+          85,
+          15,
+          77
+        ],
+        "panel_relative_frobenius_median": 1.0715338270388934,
+        "panel_relative_frobenius_p95": 1.719658900399103,
+        "panel_relative_frobenius_max": 5.780404498667198,
+        "reference_objective": 66.47762845857677,
+        "candidate_allocation_reference_objective": 77.33352402791004,
+        "reference_fw_gap": 6.071012364827766e-06,
+        "candidate_fw_gap": 0.9834088907082759,
+        "reference_fw_iterations": 2,
+        "candidate_fw_iterations": 300,
+        "thresholds": {
+          "panel_ranking_spearman_min": 0.8,
+          "validation_design_ratio_max": 1.25,
+          "top_k_overlap_min": 0.5
+        }
+      },
+      "conditional_reconstruction": {
+        "passed": true,
+        "failed_gates": [],
+        "n_queries": 80,
+        "feature_dimension": 16,
+        "normalized_rmse": 0.4166425002933947,
+        "median_abs_z": 0.08295923795680016,
+        "p95_abs_z": 0.9247225782954476,
+        "max_abs_z": 2.2457320755443866,
+        "thresholds": {
+          "normalized_rmse_max": 1.0,
+          "catastrophic_abs_z_max": 10.0
+        }
+      },
+      "sampling_health": {
+        "passed": true,
+        "failed_gates": [],
+        "importance_ess_fraction": 0.611177234601069,
+        "unconditional_acceptance": 0.04109801488833747,
+        "conditional_acceptance": 0.029073827223955895,
+        "thresholds": {
+          "importance_ess_min": 0.1,
+          "unconditional_acceptance_min": 0.001,
+          "conditional_acceptance_min": 0.001
+        },
+        "conditional_acceptance_min_observed": 0.005747126436781609,
+        "conditional_acceptance_max_observed": 0.07172995780590717,
+        "conditional_ess_mean": 0.9810575882171497,
+        "conditional_ess_min": 0.891941384347648
+      },
+      "reference_estimator": {
+        "kind": "cross_fitted_tilt_weighted_knn",
+        "donor_split": "ref_train",
+        "outer_split": "ref_val",
+        "outer_rows": 512,
+        "neighbors": 60
+      },
+      "candidate_information_protocol": "matched_outer"
+    }
+  ],
+  "provenance": {
+    "code_commit": "82034c5709c79bd228f8a1c691a64ea81ae4ac1a",
+    "dirty_worktree": true,
+    "code_diff_sha256": "957d9a77b2b46300e9d92622f0c3fdf1d932932370d89f4b581f005fbe4f6e65",
+    "config": "G:\\0-newResearch\\4.RR_GID_CN\\configs\\opt\\generator_information_vaeac_opt_v6mix.yaml",
+    "config_sha256": "5c4f6346d40b7c996803bda4bf2c7661ae2eaf76e3f22946db7f0cc0f6d7c0fe",
+    "python": "3.10.0rc2 (tags/v3.10.0rc2:839d789, Sep  7 2021, 18:51:45) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "pytorch": "2.6.0+cu124",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "cuda_runtime": "12.4"
+  },
+  "created_at": "2026-09-14T08:52:16.907270+00:00",
+  "wall_seconds": 16.958163400000103
+}

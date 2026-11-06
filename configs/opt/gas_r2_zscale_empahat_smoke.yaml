@@ -1,0 +1,39 @@
+schema_version: opt-e5-r2-zscale-empahat-smoke-v1
+experiment_name: opt_e5_r2_zscale_empahat_smoke
+evidence_level: L3-opt-smoke
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [1600]
+campaigns:
+  - batches8_9
+replications: 2
+seed_manifest: G:/0-newResearch/4.RR_GID_CN/paper_results/e5_r2_v5/seed_manifest.json
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 1600
+  anchor_pilot: 160
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 8
+scoring_max_step_norm: 0.5
+scoring_init: zero
+information_at: zero
+rr_fisher: reference
+ahat_source: empirical
+pilot_moment: knn
+theta_bound: 4.0
+theta_norm_cap: 3.0
+pilot_norm_cap: 2.0
+design_uniform_mix: 0.0
+design_max_share: null
+information_ridge: 0.05
+dtype: float32
+experiment_mode: bulk
+information_outer_rows: 512
+generator_kind: vaeac
+generator_neighbors: 60
+generator_checkpoint: H:/RR_GID_CN_data/active/opt_20260914/checkpoints/vaeac_gas_opt_v6mix_zscale.pt
+output_path: G:/0-newResearch/4.RR_GID_CN/results/opt/e5_r2_zscale_empahat_smoke

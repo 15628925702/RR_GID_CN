@@ -1,0 +1,39 @@
+schema_version: paper-e5-r1-empirical-v7c2
+experiment_name: gas_semisynthetic_empirical_knn_v7c2
+evidence_level: L4-empirical-knn-v7-smoke
+methods:
+  - Uniform SQD
+  - A-OSQD
+  - Discriminative Score OED
+  - RR-GID
+budgets: [1600]
+replications: 20
+pilot_schedule:
+  kind: anchored_power
+  anchor_budget: 1600
+  anchor_pilot: 160
+  exponent: 0.5
+  max_fraction: 0.2
+scoring_steps: 8
+scoring_max_step_norm: 0.5
+rr_fisher: generator
+theta_bound: 4.0
+design_max_share: 0.2
+dtype: float32
+experiment_mode: bulk
+information_outer_rows: 512
+gen_info_tilted: 128
+gen_info_cond: 32
+mlp_steps: 100
+mlp_hidden: 64
+generator_kind: empirical_knn
+generator_neighbors: 60
+seed_manifest: results/e5_r1_v3/seed_manifest.json
+scoring_init: pilot
+information_at: pilot
+pilot_moment: knn
+theta_norm_cap: 2.0
+pilot_norm_cap: 2.0
+design_uniform_mix: 0.1
+generator_checkpoint: H:/RR_GID_CN_data/reusable/checkpoints/empirical_knn_gas_v1.json
+output_path: results/e5_r1_v7c2_smoke

@@ -245,10 +245,39 @@ def load_gas_generator(cfg: dict, data, feature_fn, device: str = "cpu"):
     from .vaeac import VAEACGenerator, load_vaeac_checkpoint
 
     model, payload = load_vaeac_checkpoint(str(checkpoint), device=device, expected_dim=128)
-    return VAEACGenerator(
+    generator = VAEACGenerator(
         model,
         payload.get("scale", np.ones(128)),
         alpha=float(payload.get("alpha", 0.0)),
         device=device,
         feature_fn=feature_fn,
     )
+    if payload.get("phi_net") is not None:
+        generator.attach_phi_net(
+            payload["phi_net"],
+            hidden=int(payload.get("phi_net_hidden", 256)),
+            kind=str(payload.get("phi_net_kind") or "panel_embed"),
+            n_panels=int(payload.get("phi_net_n_panels", 120)),
+        )
+    if payload.get("phi_info_scale") is not None:
+        generator.attach_phi_info_scale(payload["phi_info_scale"])
+    if payload.get("phi_net_step1") is not None:
+        generator.attach_phi_net_step1(
+            payload["phi_net_step1"],
+            hidden=int(payload.get("phi_net_hidden", 256)),
+            n_panels=int(payload.get("phi_net_n_panels", 120)),
+        )
+    if payload.get("phi_info_mix_a") is not None:
+        generator.attach_phi_info_mix_a(payload["phi_info_mix_a"])
+    if payload.get("phi_info_scale_zero") is not None:
+        generator.attach_phi_info_scale_zero(payload["phi_info_scale_zero"])
+    if payload.get("phi_net_zero") is not None:
+        generator.attach_phi_net_zero(
+            payload["phi_net_zero"],
+            hidden=int(payload.get("phi_net_hidden", 256)),
+            n_panels=int(payload.get("phi_net_n_panels", 120)),
+        )
+    # kNN pilot moment still uses the frozen donor table, not VAEAC samples.
+    generator.reference = np.asarray(data["ref_train"], dtype=float)
+    generator.neighbors = int(cfg.get("generator_neighbors", 60))
+    return generator

@@ -212,6 +212,7 @@ def main() -> None:
                 share_score_basis=bool(cfg.get("share_score_basis", True)),
                 score_build_on_cuda=bool(cfg.get("score_build_on_cuda", False)),
                 score_direct_cuda=bool(cfg.get("score_direct_cuda", False)),
+                rr_design_fisher=str(cfg.get("rr_design_fisher", "beta_star")),
                 adaptive_start_order=int(cfg.get("adaptive_start_order", 8)),
                 adaptive_max_order=int(cfg.get("adaptive_max_order", 18)),
                 adaptive_atol=float(cfg.get("adaptive_atol", 2e-5)),

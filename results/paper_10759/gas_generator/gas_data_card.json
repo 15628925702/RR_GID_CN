@@ -1,0 +1,40 @@
+{
+  "feature_dim": 16,
+  "features_per_sensor": 8,
+  "n_batches": 10,
+  "n_features_raw": 128,
+  "n_panels": 120,
+  "n_sensors": 16,
+  "n_total": 13910,
+  "phi_in_unit_range": true,
+  "ref_train_mean_abs": 0.7580479668900986,
+  "ref_train_rows": 4746,
+  "ref_train_std_range": [
+    0.37077247479164493,
+    0.8267241322500614
+  ],
+  "ref_val_rows": 1187,
+  "reference_batches": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "reference_rows": 5933,
+  "sha256": "1c284f05e8b5c0775a68c604830c347c7e36653c05ed30036808a260ce04b0cf",
+  "source": "UCI Gas Sensor Array Drift at Different Concentrations (dataset 270)",
+  "split": "80/20 train/val on reference batches 1-6",
+  "split_seed": 2026,
+  "target_campaigns": {
+    "batch10": 3600,
+    "batch7": 3613,
+    "batches89": 764
+  },
+  "target_raw_records_saved": [
+    "batch7",
+    "batches89",
+    "batch10"
+  ]
+}

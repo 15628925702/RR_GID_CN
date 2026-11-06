@@ -1,0 +1,98 @@
+{
+  "experiment": "opt_e5_r1_v6mix_20",
+  "n_rows": 320,
+  "rows_sha256": "78de030df0f305ad9c82a7b8b219b64d52565c2bb869c17833f2001e4884c21f",
+  "artifact_sha256": "5bb8d4818bfbf7e6792e9494e2de9bc06eeafa84f795a86221fad03d622583da",
+  "rr_hit_norm_cap": 0,
+  "projection_loss": {
+    "400": {
+      "Uniform SQD": {
+        "mean": 0.1185024186694575,
+        "ci_halfwidth": 0.011110171831968647,
+        "n": 20
+      },
+      "A-OSQD": {
+        "mean": 0.12027722675087911,
+        "ci_halfwidth": 0.011008553728179923,
+        "n": 20
+      },
+      "Discriminative Score OED": {
+        "mean": 0.11672526362547855,
+        "ci_halfwidth": 0.011184528782881953,
+        "n": 20
+      },
+      "RR-GID": {
+        "mean": 0.11560825902695289,
+        "ci_halfwidth": 0.01112090814153867,
+        "n": 20
+      }
+    },
+    "800": {
+      "Uniform SQD": {
+        "mean": 0.10110809272560514,
+        "ci_halfwidth": 0.008756037859009302,
+        "n": 20
+      },
+      "A-OSQD": {
+        "mean": 0.10425689561142586,
+        "ci_halfwidth": 0.0076984435878257,
+        "n": 20
+      },
+      "Discriminative Score OED": {
+        "mean": 0.10151689589793403,
+        "ci_halfwidth": 0.007864649040204511,
+        "n": 20
+      },
+      "RR-GID": {
+        "mean": 0.09968595373763864,
+        "ci_halfwidth": 0.008159938210601939,
+        "n": 20
+      }
+    },
+    "1600": {
+      "Uniform SQD": {
+        "mean": 0.10386984341735939,
+        "ci_halfwidth": 0.004921688230545384,
+        "n": 20
+      },
+      "A-OSQD": {
+        "mean": 0.10602870276630816,
+        "ci_halfwidth": 0.005304045194538073,
+        "n": 20
+      },
+      "Discriminative Score OED": {
+        "mean": 0.10315581736073805,
+        "ci_halfwidth": 0.004995015413889719,
+        "n": 20
+      },
+      "RR-GID": {
+        "mean": 0.09907210138631121,
+        "ci_halfwidth": 0.0066021032676400766,
+        "n": 20
+      }
+    },
+    "3200": {
+      "Uniform SQD": {
+        "mean": 0.10766464943943685,
+        "ci_halfwidth": 0.00629464769932728,
+        "n": 20
+      },
+      "A-OSQD": {
+        "mean": 0.11054147660641198,
+        "ci_halfwidth": 0.005861033998379433,
+        "n": 20
+      },
+      "Discriminative Score OED": {
+        "mean": 0.10888047119946802,
+        "ci_halfwidth": 0.006570951742445531,
+        "n": 20
+      },
+      "RR-GID": {
+        "mean": 0.10626883905495266,
+        "ci_halfwidth": 0.007665754871174406,
+        "n": 20
+      }
+    }
+  },
+  "note": "Opt track only. Frozen E5 unchanged."
+}

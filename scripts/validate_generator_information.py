@@ -281,9 +281,22 @@ def validate_gas(cfg: dict, device: str, output_dir: Path) -> dict:
         neighbors=int(spec["empirical_neighbors"]),
     )
     generator = load_gas_generator(spec, data, fn, device=device)
+    protocol = str(spec.get("information_protocol") or "generator_tilt").strip().lower()
+    estimator = str(spec.get("conditional_estimator") or "auto").strip().lower()
     if getattr(generator, "kind", "") == "empirical_knn":
         _, candidate_information, candidate_means_full = generator.panel_information(
             beta, panels, outer_x
+        )
+        protocol = "matched_outer"
+    elif protocol in {"matched_outer", "outer", "knn_operator"}:
+        _, candidate_information, candidate_means_full = generator.panel_information(
+            beta,
+            panels,
+            outer_x,
+            n_conditional=int(spec["n_conditional"]),
+            seed=202609710,
+            feature_fn=fn,
+            estimator=estimator,
         )
     else:
         _, candidate_information = learned_information(
@@ -307,7 +320,7 @@ def validate_gas(cfg: dict, device: str, output_dir: Path) -> dict:
         take %= n_outer
         observed = outer_x[take][:, list(panel)]
         truth = empirical_means[panel_index, take]
-        if candidate_means_full is not None:
+        if candidate_means_full is not None and str(spec.get("reconstruction_estimator") or "head").strip().lower() != "imp":
             learned = candidate_means_full[panel_index, take]
         else:
             learned = imp_conditional_mean_from_generator(
@@ -363,6 +376,7 @@ def validate_gas(cfg: dict, device: str, output_dir: Path) -> dict:
             "outer_rows": int(n_outer),
             "neighbors": int(spec["empirical_neighbors"]),
         },
+        "candidate_information_protocol": protocol,
     }
 
 

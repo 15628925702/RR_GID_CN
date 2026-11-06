@@ -1,0 +1,7 @@
+﻿{
+  "experiment": "opt_e1_j4_20_ftilde",
+  "rows": 400,
+  "sha256": "796719b2ca618dd75a4214f184779f2c84c316faceef32479e8a0d61c4783941",
+  "rr_design_fisher": "plugin_tilde",
+  "do_not_overwrite": ["results/opt/e1_j4_20", "freeze-20260914-v6rdv5"]
+}
